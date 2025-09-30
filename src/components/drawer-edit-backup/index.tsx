@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -22,151 +22,96 @@ import { api } from "@/app/services/api"
 import { Alert } from "../alert/alert"
 import { IconSend, IconSettingsCog } from "@tabler/icons-react"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { utils } from "./utils/functions"
 
 type props = {
   client: clientsRequest,
   openDrawer: boolean,
-  setOpenDrawer: (value: boolean) => void
+  setOpenDrawer: Dispatch<SetStateAction<boolean>>
 }
-
-type listAcces = ['L', 'B', 'A']
-type acess = 'L' | 'B' | 'A'
-
-
-
+ 
 export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
 
   const [loadingSave, setLoadingSave] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
+
+  const [visibleAlertConnection, setVisibleAlertConnection] = useState(false);
+
   const [titleMsg, setTitleMsg] = useState('');
   const [descriptionMsg, setDescriptionMsg] = useState('');
   const [loadingExecBackup, setLoadingExecBackup] = useState(false)
   const [loadingTestConnection, setLoadingTestConnection] = useState(false)
 
-  const [titleMsgTestConnection, setTitleMsgTestConnection] = useState('');
-  const [descriptionMsgTestConnection, setDescriptionMsgTestConnection] = useState('');
-  const [visibleAlertTestConnection, setVisibleAlertTestConnection] = useState(false);
+  const utilsFunctions = utils();
 
-  async function testConnection() {
-
-    setLoadingTestConnection(true)
-    try {
-      const result = await api.post(`/conexao/teste`, {
-        host: String(client.host),
-        porta: String(client.portaMysql),
-        usuario: String(client.usuarioMysql),
-        senha: String(client.senhaMysql)
-      })
-
-      if (result.status === 200) {
-        setLoadingTestConnection(false)
-        setVisibleAlertTestConnection(true)
-        setTitleMsgTestConnection('Ok!')
-        setDescriptionMsgTestConnection(result.data.msg)
-      }
-    } catch (e: any) {
-      if (e.status === 500) {
-        console.log(e.response.data.message)
-        setLoadingTestConnection(false)
-        setVisibleAlertTestConnection(true)
-        setTitleMsgTestConnection('Erro!')
-        setDescriptionMsgTestConnection(e.response.data.message)
-      }
-      if (e.status === 400) {
-        console.log(e.response.data.message)
-        setLoadingTestConnection(false)
-        setVisibleAlertTestConnection(true)
-        setTitleMsgTestConnection('Erro!')
-        setDescriptionMsgTestConnection(e.response.data.msg)
-      }
-
-    } finally {
-      setVisibleAlertTestConnection(true)
-      setLoadingTestConnection(false)
+  type dataUpdate =
+     {
+      hora_agenda_backup? : string,
+      efetuar_backup? :  'S' | 'N',
+      senhaMysql? : string,
+      portaMysql? : string | number,
+      usuarioMysql? : string,
+      acesso? :  'L' | 'A' | 'B'
     }
 
-  }
+ 
 
-
-  async function execBackup() {
-    setLoadingExecBackup(true)
-    try {
-      const result = await api.post(`/executar-backup/${client.codigo}`)
-      if (result.status === 200) {
-        setLoadingExecBackup(false)
-
-        setTitleMsg('OK!');
-        setDescriptionMsg('Backup iniciado, aguarde alguns minutos até que finalizamos a exportação dos bancos de dados! ')
-        setVisibleAlert(true)
-      }
-
-    } catch (e: any) {
-      setLoadingExecBackup(false)
-
-      setTitleMsg('Erro!');
-      setDescriptionMsg(e.response.data)
-      setVisibleAlert(true)
-
-    } finally {
-      setLoadingExecBackup(false)
-
-    }
-  }
 
   function formatHours(stringHour: string) {
     const horaFormatada = new Date('2023-01-01 ' + stringHour).toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' })
     return horaFormatada
   }
 
-  async function putBackupCLient() {
-    console.log(client)
-  }
+  function patch(){
+   
+    if(!client.usuarioMysql || client.usuarioMysql === ''){
+        setVisibleAlert(true);
+        setTitleMsg('Erro');
+        setDescriptionMsg("É necessario informar o usuario do mysql")
+      return   
+    }
 
-  //  const { user,  logout }:any = useAuth();
+    const dataPatch:dataUpdate = {
+        efetuar_backup: client.efetuar_backup,
+        hora_agenda_backup: client.hora_agenda_backup || '08:00',
+        portaMysql: client.portaMysql ||  3306 ,
+        senhaMysql: client.senhaMysql || '',
+        usuarioMysql: client.usuarioMysql 
+    }
+    utilsFunctions.patchtBackupCLient(
+          {   setDescriptionResponse: setDescriptionMsg,
+              setLoadingSave:setLoadingSave ,
+              setTitleResponse: setTitleMsg,
+              setVisibleAlert: setVisibleAlert,
+            },
+            dataPatch,
+            String(client.codigo)
+          )
+    }
 
+ function backup(){
+    utilsFunctions.execBackup(client.codigo, 
+      {
+        setDescriptionResponse:setDescriptionMsg,
+         setLoading: setLoadingSave,
+         setTitleResponse: setTitleMsg,
+         setVisibleAlert: setVisibleAlert, 
+       }
+    )
+ }
 
-  async function register() {
-    /* try {
-       
-    
- 
-       const resultCreateTask = await api.put(`/tasks/${task.id}`,dataUpdate ,{
-              headers: {
-                  authorization: user.token 
-             },
-         } 
-           )
-          
-        if (resultCreateTask.status === 200) {
-          console.log(resultCreateTask.data);
-          setOpenDrawer(false)
-          setVisibleAlert(true);
-          setTitleResponse('Ok');
-          setDescriptionResponse("Task registered sucessfully")
-        }
-       setLoadingSave(false)
-  
-     } catch (e) {
-       setLoadingSave(false)
-        setOpenDrawer(false)
-         setVisibleAlert(true);
-         setTitleResponse('Erro');
-         setDescriptionResponse("Error registering task")
- 
-       console.log(`Erro ao tentar atualiza uma tarefa`, e )
-        console.log(task)
- 
-     } finally {
-        setOpenDrawer(false)
-       setLoadingSave(false)
-     }
-     */
-
-  }
+ function connection(){
+  utilsFunctions.testConnection(client,{
+    setDescriptionResponse:  setTitleMsg,
+    setLoading: setLoadingSave, 
+    setTitleResponse:setDescriptionMsg,
+    setVisibleAlert: setVisibleAlertConnection,
+     setLoadingTestConnection: setLoadingTestConnection
+  })
+ }
 
   return (
     <>
-
       <Drawer open={openDrawer} >
         <DrawerContent>
           <div className="mx-auto w-[70%]  ">
@@ -180,28 +125,9 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                 <ThreeDot color="black" />
               </div>
               :
-
               <>
                 <div className="grid gap-3  ">
-
-                  {/**  ------ Configuração Mysql ------  
-                 {
-                  loadingTestConnection ?
-                  
-                    <div className="border-1 p-1 rounded-2xl items-center flex justify-center ">
-                      <ThreeDot color="black" />
-                    </div>
-                   :
-                    (
-                    <div className="border-1 p-1 rounded-2xl ">
-                      <DrawerTitle className="text-gray-500 font-sans text-center text-2xl" >Configuração Mysql</DrawerTitle>
-
-                   </div>
-                  )
-                 }
-                 
-           {/** ------------------------------------ */}
-
+          
                   {
                     loadingTestConnection ?
                       <div className="border-1 p-1 rounded-2xl items-center flex justify-center ">
@@ -248,7 +174,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                           </div>
 
                           <div className="items-center flex justify-center m-5" >
-                            <Button className="w-[60%]" onClick={() => testConnection()} >
+                            <Button className="w-[60%]" onClick={() => connection()} >
                               Testar Conexão
                             </Button>
                           </div>
@@ -264,7 +190,9 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                                 defaultValue={
                                   client && client.hora_agenda_backup &&
                                     client.hora_agenda_backup != null ?
-                                    formatHours(client.hora_agenda_backup) : '00:00'}
+                                    formatHours(client.hora_agenda_backup) : '00:00'
+                                  }
+                                  onChange={(e)=>  client.hora_agenda_backup = e.target.value+':00' }
                               />
                             </div>
                           </div>
@@ -278,11 +206,11 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                   </div>
                 </div>
                 <DrawerFooter>
-                  <Button onClick={() => execBackup()} variant={"default"} className="bg-green-600 hover:bg-green-700">
+                  <Button onClick={() => backup()} variant={"default"} className="bg-green-600 hover:bg-green-700">
                     Executar backup
                   </Button>
                   <Button
-                    onClick={() => putBackupCLient()}
+                    onClick={() => patch()}
                   >
                     Salvar Configurações
                   </Button>
@@ -302,13 +230,15 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
         setVisible={setVisibleAlert}
         title={titleMsg}
         visible={visibleAlert}
+        closeDrawer={setOpenDrawer}
       />
-      <Alert
-        description={descriptionMsgTestConnection}
-        setVisible={setVisibleAlertTestConnection}
-        title={titleMsgTestConnection}
-        visible={visibleAlertTestConnection}
+  <Alert
+        description={descriptionMsg}
+        setVisible={setVisibleAlertConnection}
+        title={titleMsg}
+        visible={visibleAlertConnection}
       />
+ 
 
     </>
 

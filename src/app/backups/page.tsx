@@ -12,15 +12,11 @@ import { useEffect, useState } from "react"
 import { clientsRequest } from "../@types/clients"
 import { api } from "../services/api"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Settings } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
 export default function PageBackups() {
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ pesquisa, setPesquisa ] = useState<string | null >('')
   const [ orderBy, setOrderBy ] = useState('efetuar_backup')
-  const  [ paramEfetuar_backup,setParamEfetuar_backup] = useState('S'); 
   
   async function getClients(){
   
@@ -39,7 +35,7 @@ export default function PageBackups() {
        const resultApi = await api.get('/clientes', { params: query  });
        console.log(resultApi)
       if(resultApi.status === 200 ){
-         setDataClients(resultApi.data)
+         setDataClients(resultApi.data.clientes)
       }
       setLoadingData(false)
 

@@ -18,7 +18,7 @@ export default function PageClientes (){
       setLoadingData(true)
        const resultApi = await api.get('/clientes');
       if(resultApi.status === 200 ){
-         setDataClients(resultApi.data)
+         setDataClients(resultApi.data.clientes)
       }
       setLoadingData(false)
 

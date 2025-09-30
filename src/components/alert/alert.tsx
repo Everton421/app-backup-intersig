@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle   } from "../ui/alert-dialog";
 
 type props = { 
@@ -5,8 +6,13 @@ type props = {
     description:string,
     setVisible:(i:boolean)=>void,
      visible:boolean
+     closeDrawer?: Dispatch<SetStateAction<boolean>>
 }
-export function Alert({ title, description,  setVisible,visible }: props ){
+export function Alert({ title, description,  setVisible, visible, closeDrawer }: props ){
+  function click(){
+setVisible(false) 
+ closeDrawer && closeDrawer(false)
+  }
         return(
       <AlertDialog open={visible} onOpenChange={()=>{}}>
             <AlertDialogContent>
@@ -18,7 +24,7 @@ export function Alert({ title, description,  setVisible,visible }: props ){
               </AlertDialogHeader>
               <AlertDialogFooter>
                 
-                <AlertDialogAction onClick={()=> setVisible(false)} >Ok</AlertDialogAction>
+                <AlertDialogAction onClick={()=>  click() } >Ok</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
