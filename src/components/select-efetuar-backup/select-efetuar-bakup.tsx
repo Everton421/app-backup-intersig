@@ -1,19 +1,21 @@
+import { IconCircleDashed, IconCircleDashedCheck, IconCircleDashedLetterX, IconCircleDashedX, IconSettingsCheck, IconSettingsX } from "@tabler/icons-react"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
-type listEfetuarBackup = ['S', 'N']
+type listEfetuarBackup = ['S', 'N' ]
 type efetuarBackup = 'S'| 'N' 
 
 type props=
 { 
     list:  listEfetuarBackup, 
     efetuarBackup: efetuarBackup , 
-    setAcess:(acess:efetuarBackup)=>void
+    setEfetuarBackup:(acess:efetuarBackup)=>void
 }
 
-function selectEfetuarBackup( { list , efetuarBackup, setAcess}:props       ){
+export function SelectEfetuarBackup( { list , efetuarBackup, setEfetuarBackup}:props       ){
 
    return (
-    <Select defaultValue={acess} onValueChange={setAcess} >
-      <SelectTrigger className="w-[280px]">
+    <Select defaultValue={efetuarBackup} onValueChange={setEfetuarBackup} >
+      <SelectTrigger className="p-3" >
         <SelectValue placeholder="Selecione o acesso" />
       </SelectTrigger>
       <SelectContent>
@@ -21,12 +23,13 @@ function selectEfetuarBackup( { list , efetuarBackup, setAcess}:props       ){
             {
                 list && list.length > 0 &&
                 list.map((i)=>(
-                  <SelectItem   key={i} value={i} onClick={()=> setAcess(i)} >
+                  <SelectItem   key={i} value={i} onClick={()=> setEfetuarBackup(i)} >
                        < span>
                         </span>
-                       { i ==='L' &&  ( <>Liberado <IconCircleDashedCheck color="green"/> </> )  }
-                       { i ==='B' && ( <>Bloquado <IconCircleDashedLetterX color="red"/></> ) }
-                       { i ==='A' && ( <>Avaliação <IconCircleDashedLetterA color="blue" /> </> )} 
+                       { i ==='S' &&  ( <> Efetuar <IconSettingsCheck color="green"/> </> )  }
+                       { i ==='N' && ( <> Não Efetuar <IconSettingsX color="red"/></> ) }
+                       { i === null ||  !i && ( <> Não Efetuar <IconSettingsX color="red"/></> ) }
+
                    </SelectItem>
                 ))
             }

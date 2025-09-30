@@ -22,9 +22,8 @@ export const TableBackups = ({clients }:props )=>{
   setViewDrawer(true)
 }
 return (
-
 <Table >
-  <TableCaption>A list of your recent invoices.</TableCaption>
+ 
   <TableHeader>
     <TableRow>
       <TableHead className="w-[100px]">Cód</TableHead>
@@ -63,7 +62,7 @@ return (
                 <TableCell> 
                     { i.status_backup === 'finalizado' && 
                       <div className="flex font-sans  "> 
-                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 gap-1" />
+                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 gap-1 ml-1 mr-1 " />
                          <Badge variant="outline" className="text-muted-foreground px-1.5">
                            finalizado
                          </Badge> 
@@ -71,7 +70,7 @@ return (
                     }
                       { i.status_backup === 'pendente' && 
                       <div className="flex font-sans  "> 
-                          <IconAlertCircleFilled className="fill-orange-700 gap-1 "   />     
+                          <IconAlertCircleFilled className="fill-orange-700 gap-1 ml-1 mr-1 "   />     
                         <Badge variant="outline" className="text-muted-foreground px-1.5">
                             pendente
                           </Badge> 
@@ -80,7 +79,7 @@ return (
                      }                      
                       { i.status_backup ===  'erro' && 
                       <div className="flex font-sans  "> 
-                      <IconCircleXFilled className="fill-red-600 gap-1" />
+                      <IconCircleXFilled className="fill-red-600 gap-1 ml-1 mr-1 " />
                         <Badge variant="outline" className="text-muted-foreground px-1.5">
                             erro 
                         </Badge>       
@@ -89,7 +88,7 @@ return (
                        }  
                      { i.status_backup ===  'em-andamento' && 
                       <div className="flex font-sans  "> 
-                         <IconLoader className="fill-gray-700 gap-1" />
+                         <IconLoader className="fill-gray-700 gap-1 ml-1 mr-1 " />
                         <Badge variant="outline" className="text-muted-foreground px-1.5">
                             em-andamento
                         </Badge>       
@@ -102,22 +101,20 @@ return (
                     { i.efetuar_backup && i.efetuar_backup === 'S' ?
                      ( 
                       <div className="flex font-sans  "> 
-                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" /> 
+                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 ml-1 mr-1" /> 
                          <Badge variant="outline" className="text-muted-foreground px-1.5" >
                               configurado
                         </Badge> 
                       </div>
                      ) : ( 
                       <div className="flex font-sans  "> 
-                         <IconSettingsCancel className="fill-gray-200 " />
+                         <IconSettingsCancel className="fill-gray-200 ml-1 mr-1" />
                         <Badge variant="outline" className="text-muted-foreground px-1.5" >
                             Não configurado
                         </Badge>       
                       </div>
                          )  } 
                  </TableCell>
-          
-
                 </TableRow>
             ))
         ): null
@@ -129,6 +126,5 @@ return (
       }
   </TableBody>
 </Table>
-    
 )
 }

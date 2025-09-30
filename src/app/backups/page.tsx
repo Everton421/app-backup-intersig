@@ -12,15 +12,32 @@ import { useEffect, useState } from "react"
 import { clientsRequest } from "../@types/clients"
 import { api } from "../services/api"
 import { Input } from "@/components/ui/input"
-
-export default function Page() {
+import { Switch } from "@/components/ui/switch"
+import { Settings } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+export default function PageBackups() {
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
-
+  const [ pesquisa, setPesquisa ] = useState<string | null >('')
+  const [ orderBy, setOrderBy ] = useState('efetuar_backup')
+  const  [ paramEfetuar_backup,setParamEfetuar_backup] = useState('S'); 
+  
   async function getClients(){
+  
+    let query ={ search: pesquisa , orderBy:orderBy  }
+
+    if(pesquisa !== ''){
+      query.search = pesquisa;
+    }
+    if(orderBy !== ''){
+       query.orderBy = orderBy
+    }
+ 
+    
     try{
       setLoadingData(true)
-       const resultApi = await api.get('/clientes');
+       const resultApi = await api.get('/clientes', { params: query  });
+       console.log(resultApi)
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data)
       }
@@ -32,13 +49,12 @@ export default function Page() {
       console.log(  e )
     }finally{
       setLoadingData(false)
-
     } 
   }
   
   useEffect(()=>{
   getClients()
-  },[])
+  },[pesquisa])
 
 
   return (
@@ -53,26 +69,25 @@ export default function Page() {
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col mt-2">
+        <div className="flex flex-1 mt-2  " >
          <div className=" w-4/12 ml-10" >
            <Input
-
+            onChange={(e)=> setPesquisa(e.target.value)}
            placeholder="pesquisar:"
            />
           </div>
-        </div>
-        
+
+       </div>
                 
-        <div className="flex flex-1 flex-col ">
-          <div className="@container/main flex flex-1 flex-col gap-2 ">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 ">
-    
-          <div className="flex items-center justify-between px-4 lg:px-6  ">
+     <div className="flex  w-full h-full flex-col  ">
+       <div className="@container/main flex flex-1 flex-col gap-2 itens-start">
+         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 ">
+           <div className="flex items-center justify-between px-4 lg:px-6  ">
              { 
                 
                   ( 
                    dataClients && dataClients.length > 0 ?     
-                    <TableBackups clients={dataClients}  />
+                    <TableBackups clients={ dataClients }  />
                     :
                       loadingData ? (
                       <div className="flex w-full items-center justify-center">
@@ -82,12 +97,9 @@ export default function Page() {
                     <div className="flex w-full items-center justify-center">
                           <span className="font-bold text-2xl text-gray-700"> nenhum cliente encontrado!</span> 
                     </div>
-                )
+                 )
                 }
-            
-            
-            </div>
- 
+              </div>
             </div>
           </div>
         </div>

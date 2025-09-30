@@ -96,7 +96,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { TableClients } from "./table-backups"
 
 export const schema = z.object({
   id: z.number(),

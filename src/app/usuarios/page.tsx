@@ -9,16 +9,24 @@ import { api } from "../services/api";
 import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
+import { TableUsers } from "@/components/table-usuarios";
 
-export default function PageClientes (){
+type usuario = {
+       id: number,
+       email_user: string,
+       nome_user:string
+}
+
+export default function PageUsers (){
   const [ loadingData, setLoadingData ]= useState(true);
-  const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
-  async function getClients(){
+  const  [ dataUsers, setDataUsers ] = useState<usuario[]>( )
+
+  async function getUsers(){
     try{
       setLoadingData(true)
-       const resultApi = await api.get('/clientes');
+       const resultApi = await api.get('/usuarios');
       if(resultApi.status === 200 ){
-         setDataClients(resultApi.data)
+         setDataUsers(resultApi.data.usuarios)
       }
       setLoadingData(false)
 
@@ -33,7 +41,7 @@ export default function PageClientes (){
   }
   
   useEffect(()=>{
-  getClients()
+  getUsers()
   },[])
 
 
@@ -67,8 +75,8 @@ export default function PageClientes (){
              { 
                 
                   ( 
-                   dataClients && dataClients.length > 0 ?     
-                    <TableClientes clients={dataClients}  />
+                   dataUsers && dataUsers.length > 0 ?     
+                    <TableUsers usuarios={dataUsers}  />
                     :
                       loadingData ? (
                       <div className="flex w-full items-center justify-center">
@@ -76,7 +84,7 @@ export default function PageClientes (){
                        </div>
                       ) :
                     <div className="flex w-full items-center justify-center">
-                          <span className="font-bold text-2xl text-gray-700"> nenhum cliente encontrado!</span> 
+                          <span className="font-bold text-2xl text-gray-700"> nenhum usuario encontrado!</span> 
                     </div>
                 )
                 }
