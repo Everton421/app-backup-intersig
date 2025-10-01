@@ -7,19 +7,29 @@ import {
 } from "@/components/ui/sidebar"
 
 import { TableBackups } from "@/components/table-backups"
-import { OrbitProgress } from "react-loading-indicators"
+import { OrbitProgress, ThreeDot } from "react-loading-indicators"
 import { useEffect, useState } from "react"
 import { clientsRequest } from "../@types/clients"
-import { api } from "../services/api"
+import { configApi } from "../services/api"
 import { Input } from "@/components/ui/input"
+import { useAuth } from "../contexts/AuthContext"
+
 export default function PageBackups() {
+  
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ pesquisa, setPesquisa ] = useState<string | null >('')
   const [ orderBy, setOrderBy ] = useState('efetuar_backup')
-  
+    
+  const api = configApi()
+    
+  const { user,  loadingAuth} = useAuth();
+
+
   async function getClients(){
   
+    if(!user) return console.log('usuario nao autenticado')
+
     let query ={ search: pesquisa , orderBy:orderBy  }
 
     if(pesquisa !== ''){
@@ -28,11 +38,19 @@ export default function PageBackups() {
     if(orderBy !== ''){
        query.orderBy = orderBy
     }
- 
-    
-    try{
+    let header
+    if(user && user.token){
+       header = { 'authorization': user.token} 
+    }
+
+      try{
       setLoadingData(true)
-       const resultApi = await api.get('/clientes', { params: query  });
+       const resultApi = await api.get('/clientes', {   
+      headers :{ 'authorization': user.token},
+        params: query
+      },
+
+       );
        console.log(resultApi)
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data.clientes)
@@ -49,9 +67,12 @@ export default function PageBackups() {
   }
   
   useEffect(()=>{
-  getClients()
-  },[pesquisa])
+  
+      getClients()
 
+  },[ user , pesquisa])
+
+ 
 
   return (
     <SidebarProvider

@@ -1,3 +1,4 @@
+'use client'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,22 +10,63 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { configApi } from "@/app/services/api"
+import { useActionState, useState } from "react"
+import { useAuth } from "@/app/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+  const api = configApi();
+
+export function LoginForm({  className, ...props }: React.ComponentProps<"div">) {
+
+const [ email, setEmail ] = useState<string>();
+const [ senha, setSenha ] = useState<string>();
+const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
+  const {   login } =  useAuth();
+  
+  const router = useRouter();
+
+  async function loginfunction(){
+    if(!email || email === '' || email === undefined){
+      setMsg({ erro:true, msg:'nenhum email informado!'})
+      return
+    }
+    if(!senha || senha === ''){
+      setMsg({ erro:true, msg:'nenhuma senha informada!'})
+      return
+    }
+    
+    try{
+      const result = await api.post('/login', { email:email, senha:senha}) 
+        if(result.status === 200 ){
+            login( email, result.data.token)
+            router.push('/backups')
+        }
+     //   console.log(result.data)
+    }catch(e:any){
+        console.log("Erro no login", e )
+        if(e.response.status === 500 ){
+         setMsg({ erro:true, msg:`Erro interno no servidor!`})
+        } 
+        if(e.response.status === 400 && e.response.data.msg ){
+         setMsg({ erro:true, msg:`${e.response.data.msg}`})
+        }
+      }
+  
+    } 
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardTitle > Login to your account</CardTitle>
+          {
+            msg && msg?.erro &&  msg?.msg && 
+          <CardTitle className=" text-center text-red-500"> { msg?.msg }</CardTitle>
+          }
+  
         </CardHeader>
         <CardContent>
-          <form>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -33,36 +75,31 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  onChange={(e)=> setEmail( String(e.target.value))}
                 />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
+                
                 </div>
-                <Input id="password" type="password" required />
+                <Input 
+                id="password" 
+                type="password" required
+                  onChange={(e)=> setSenha( String(e.target.value))}
+                
+                />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full"
+                  onClick={()=> loginfunction()}
+                >
                   Login
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
-                </Button>
+        
               </div>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Sign up
-              </a>
-            </div>
-          </form>
+         
         </CardContent>
       </Card>
     </div>

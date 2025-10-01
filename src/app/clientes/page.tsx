@@ -5,18 +5,34 @@ import { Input } from "@/components/ui/input";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { clientsRequest } from "../@types/clients";
-import { api } from "../services/api";
+import { configApi } from "../services/api";
 import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function PageClientes (){
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
+  
+    const api = configApi()
+  
+    const { user , isAuthenticated, loadingAuth } = useAuth();
+
+    if(loadingAuth){
+      setLoadingData(true)
+    }
+
   async function getClients(){
+ 
+    if(!user ) return console.log('usuario nao esta autenticado ') 
     try{
       setLoadingData(true)
-       const resultApi = await api.get('/clientes');
+
+       const resultApi = await api.get('/clientes',{
+         headers:{ 'Authorization': user.token}
+
+       });
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data.clientes)
       }
@@ -34,7 +50,7 @@ export default function PageClientes (){
   
   useEffect(()=>{
   getClients()
-  },[])
+  },[user])
 
 
   return (
@@ -59,7 +75,7 @@ export default function PageClientes (){
         </div>
         
                 
-     <div className="flex  w-full h-screen flex-col  ">
+     <div className="flex  w-full h-full flex-col  ">
           <div className="@container/main flex flex-1 flex-col gap-2 ">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 ">
     

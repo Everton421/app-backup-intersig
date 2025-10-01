@@ -1,9 +1,11 @@
 import { clientsRequest } from "@/app/@types/clients"
-import { api } from "@/app/services/api"
+import { useAuth } from "@/app/contexts/AuthContext"
+import { configApi } from "@/app/services/api"
 import { Dispatch, SetStateAction } from "react"
 
 
 export const utils = ()=>{
+    const api = configApi()
 
     type propsPutBackup = {
          setLoadingSave? : Dispatch<SetStateAction<boolean>>
@@ -23,19 +25,25 @@ export const utils = ()=>{
       acesso? :  'L' | 'A' | 'B'
     }
 
+    const { user  } = useAuth();
+ 
   async function patchtBackupCLient ( props:propsPutBackup, dataUpdate:dataUpdate, codigo:string )  {
+         if(!user ) return console.log('usuario nao esta autenticado ') 
        
       const { setOpenDrawer, setDescriptionResponse, setLoadingSave, setTitleResponse,setVisibleAlert } = props
          try {
            
-       const resultCreateTask = await api.patch(`/clientes/${codigo}`,   
+       //const resultCreateTask = await api.patch(`/clientes/${codigo}`,   
+       const resultCreateTask = await api.patch(`/clientes/1`,   
+
             {
-              "hora_agenda_backup": String( dataUpdate.hora_agenda_backup),
-              "efetuar_backup": String(dataUpdate.efetuar_backup),
-              "senhaMysql": String(dataUpdate.senhaMysql),
-              "portaMysql": String(dataUpdate.portaMysql),
-              "usuarioMysql": String(dataUpdate.usuarioMysql),
-            }
+               "hora_agenda_backup": String( dataUpdate.hora_agenda_backup),
+               "efetuar_backup": String(dataUpdate.efetuar_backup),
+               "senhaMysql": String(dataUpdate.senhaMysql),
+               "portaMysql": String(dataUpdate.portaMysql),
+               "usuarioMysql": String(dataUpdate.usuarioMysql),
+            },
+          
       )
           
           if (resultCreateTask.status === 200) {
@@ -70,12 +78,19 @@ export const utils = ()=>{
 
   }
     async function execBackup(codigo:number,props:propsExecBackup ) {
+         if(!user ) return console.log('usuario nao esta autenticado ') 
+
       const { setLoading, setDescriptionResponse, setTitleResponse, setVisibleAlert} = props
    
       setLoading && setLoading(true)
    
       try {
-      const result = await api.post(`/executar-backup/${codigo}`)
+      const result = await api.post(`/executar-backup/${codigo}`,
+        {
+           headers:{ 'Authorization': user.token}
+
+        }
+      )
       if (result.status === 200) {
         setLoading && setLoading(false)
 
@@ -105,7 +120,9 @@ export const utils = ()=>{
       setLoadingTestConnection?: Dispatch<SetStateAction<boolean>>
   }
    async function testConnection(client:clientsRequest, props:propsTestConnection) {
-      const { setLoading,setLoadingTestConnection,  setDescriptionResponse, setTitleResponse, setVisibleAlert} = props
+    if(!user ) return console.log('usuario nao esta autenticado ') 
+     
+    const { setLoading,setLoadingTestConnection,  setDescriptionResponse, setTitleResponse, setVisibleAlert} = props
 
     setLoading && setLoading(true)
           setLoadingTestConnection && setLoadingTestConnection(true)
@@ -116,6 +133,8 @@ export const utils = ()=>{
           porta: String(client.portaMysql),
           usuario: String(client.usuarioMysql),
           senha: String(client.senhaMysql)
+        },{
+           headers:{ 'Authorization': user.token},
         })
 
         if (result.status === 200) {

@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { clientsRequest } from "../@types/clients";
-import { api } from "../services/api";
+import {  configApi } from "../services/api";
 import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
 import { TableUsers } from "@/components/table-usuarios";
+import { useAuth } from "../contexts/AuthContext";
 
 type usuario = {
        id: number,
@@ -19,12 +20,18 @@ type usuario = {
 
 export default function PageUsers (){
   const [ loadingData, setLoadingData ]= useState(true);
-  const  [ dataUsers, setDataUsers ] = useState<usuario[]>( )
+  const [ dataUsers, setDataUsers ] = useState<usuario[]>( )
+
+      const api = configApi()
+    const { user } = useAuth();
 
   async function getUsers(){
+    if(!user ) return console.log('usuario nao autenticado')
     try{
       setLoadingData(true)
-       const resultApi = await api.get('/usuarios');
+       const resultApi = await api.get('/usuarios',{
+        headers: { Authorization: user.token}
+       });
       if(resultApi.status === 200 ){
          setDataUsers(resultApi.data.usuarios)
       }
@@ -42,7 +49,7 @@ export default function PageUsers (){
   
   useEffect(()=>{
   getUsers()
-  },[])
+  },[user])
 
 
   return (
@@ -88,7 +95,6 @@ export default function PageUsers (){
                     </div>
                 )
                 }
-            
             
             </div>
  
