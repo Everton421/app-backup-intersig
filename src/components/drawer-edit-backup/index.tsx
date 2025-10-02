@@ -23,6 +23,7 @@ import { Alert } from "../alert/alert"
 import { IconSend, IconSettingsCog } from "@tabler/icons-react"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { utils } from "./utils/functions"
+import { useAuth } from "@/app/contexts/AuthContext"
 
 type props = {
   client: clientsRequest,
@@ -33,6 +34,7 @@ type props = {
 export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
 
   const api = configApi();
+    const { user  } = useAuth();
 
   const [loadingSave, setLoadingSave] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
@@ -104,6 +106,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
        }
     )
  }
+ 
 
  function connection(){
   utilsFunctions.testConnection(client,{

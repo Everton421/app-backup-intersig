@@ -2,9 +2,11 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation";
 
 export function SiteHeader({ pageName  }: {pageName? :string }) {
-    const { user } = useAuth();
+    const { user , logout} = useAuth();
+    const router = useRouter();
   
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -15,14 +17,23 @@ export function SiteHeader({ pageName  }: {pageName? :string }) {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="text-base font-medium"> { pageName ? pageName : 'Documents'}</h1>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 bg-rred-700">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            
-
             <span>
                { user && user && user.user_name}
+
             </span>
           </Button>
+          <Button variant="default"
+          onClick={()=>{
+            logout()
+            router.push('/login')
+          }}
+          >
+            logout
+          </Button> 
+         
+
         </div>
       </div>
     </header>

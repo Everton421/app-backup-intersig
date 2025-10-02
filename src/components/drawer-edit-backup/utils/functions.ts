@@ -33,8 +33,8 @@ export const utils = ()=>{
       const { setOpenDrawer, setDescriptionResponse, setLoadingSave, setTitleResponse,setVisibleAlert } = props
          try {
            
-       //const resultCreateTask = await api.patch(`/clientes/${codigo}`,   
-       const resultCreateTask = await api.patch(`/clientes/1`,   
+       const resultCreateTask = await api.patch(`/clientes/${codigo}`,   
+      // const resultCreateTask = await api.patch(`/clientes/1`,   
 
             {
                "hora_agenda_backup": String( dataUpdate.hora_agenda_backup),
@@ -86,31 +86,32 @@ export const utils = ()=>{
       const { setLoading, setDescriptionResponse, setTitleResponse, setVisibleAlert} = props
    
       setLoading && setLoading(true)
-   
+
       try {
-      const result = await api.post(`/executar-backup/${codigo}`,
-        {
-           headers:{ 'Authorization': user.token}
-
-        }
+      const result = await api.post(`/executar-backup/${codigo}`,{},
+          {
+           headers:{ 'Authorization': user.token},
+        }   
       )
-      if (result.status === 200) {
-        setLoading && setLoading(false)
 
-        setTitleResponse && setTitleResponse('OK!');
-        setDescriptionResponse && setDescriptionResponse('Backup iniciado, aguarde alguns minutos até que finalizamos a exportação dos bancos de dados! ')
-        setVisibleAlert && setVisibleAlert(true)
+      if (result.status === 200) {
+          console.log(result.status)
+          setLoading && setLoading(false)
+          setVisibleAlert && setVisibleAlert(true)
+          setTitleResponse && setTitleResponse('OK!');
+          setDescriptionResponse && setDescriptionResponse('Backup iniciado, aguarde alguns minutos até que finalizamos a exportação dos bancos de dados! ')
       }
 
     } catch (e: any) {
-      setLoading && setLoading(false)
-
-       setTitleResponse && setTitleResponse('Erro!');
-      setDescriptionResponse && setDescriptionResponse (e.response.data)
-      setVisibleAlert && setVisibleAlert(true)
+      console.log("Erro : ",e)
+        setLoading && setLoading(false)
+         setTitleResponse && setTitleResponse('Erro!');
+        setDescriptionResponse && setDescriptionResponse (e.response.data.message)
+        setVisibleAlert && setVisibleAlert(true)
 
     } finally {
-      setLoading && setLoading(false)
+       setVisibleAlert && setVisibleAlert(true)
+       setLoading && setLoading(false)
     }
   }
 

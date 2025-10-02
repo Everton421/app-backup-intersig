@@ -2,17 +2,29 @@
 import Image from "next/image";
 import { useAuth } from "./contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  const {isAuthenticated, login, logout, user  } = useAuth();
+  const {isAuthenticated, login, logout,loadingAuth, user  } = useAuth();
 
 
   const router = useRouter();
 
-   if(!user){
+
+
+  useEffect(() => {
+      if (!loadingAuth) {
+      if (!user) {
+        router.push('/login'); // Redireciona para a página de login (ajuste se for outra)
+      }
+    }
+  }, [user, loadingAuth, router]);
+
+     if(!user){
     router.push('/login')
    }
-   if(isAuthenticated){
+   if(isAuthenticated && user){
     router.push('/backups')
    }
+
 }
