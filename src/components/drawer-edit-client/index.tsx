@@ -20,7 +20,7 @@ import { Input } from "../ui/input"
 //import {  configApi } from "@/services/api"
 import { ThreeDot } from 'react-loading-indicators'
 import { clientsRequest } from "@/app/@types/clients"
-import { api } from "@/app/services/api"
+import { configApi } from "@/app/services/api"
 import { DialogTitle } from "../ui/dialog"
 import { Textarea } from "../ui/textarea"
 import { IconCircleDashedCheck, IconCircleDashedLetterA, IconCircleDashedLetterX } from "@tabler/icons-react"
@@ -68,6 +68,7 @@ export function DrawerEditclient({client, openDrawer , setOpenDrawer}:props) {
     const [loadingSave, setLoadingSave] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
 
+  const api = configApi();
   //  const { user,  logout }:any = useAuth();
 
 /*
