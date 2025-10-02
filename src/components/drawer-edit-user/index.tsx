@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FolderPlus, } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,10 @@ import { Input } from "../ui/input"
 
 import { ThreeDot } from 'react-loading-indicators'
 import { DialogTitle } from "../ui/dialog"
+import { useAuth } from "@/app/contexts/AuthContext"
+import { configApi } from "@/app/services/api"
+import { Alert } from "../alert/alert"
+import { useRouter } from "next/navigation"
 
 
 type usuario = {
@@ -35,19 +39,54 @@ setOpenDrawer : (value:boolean)=>void
 
 export function DrawerEditUser({usuario, openDrawer , setOpenDrawer}:props) {
 
-    const [loadingSave, setLoadingSave] = useState(false);
-     const [visibleAlert, setVisibleAlert] = useState(false);
+     const [loadingSave, setLoadingSave] = useState(false);
+     const [ visibleAlert, setVisibleAlert] = useState(false);
+     const [ descriptionMsg, setDescriptionMsg ] = useState('');
+     const [ titleMsg, setTiteMsg ] = useState('');
+  
+     const api = configApi()
+     const router = useRouter()
 
-  //  const { user,  logout }:any = useAuth();
+    const { user,  logout }:any = useAuth();
+
+
+   useEffect(()=>{
+      if(!user && !user.token ){
+        router.push('/login')
+       }
+    },[user])
 
   async function save (){
-      try{
-        
-      }catch(e){
 
+      setLoadingSave(true)
+      try{
+          const result = await api.put(`/usuarios/${usuario.id}`,{
+                "email": usuario.email_user,
+                "senha": usuario.senha,
+                "nome": usuario.nome_user
+          },{
+              headers:{ 'Authorization': user.token},
+          }
+        );
+        console.log(result)
+            if( result.status === 201 || result.status === 200 ){
+           setLoadingSave(false)
+                setDescriptionMsg(`Usuário registrado com sucesso!`)
+                setTiteMsg("Ok!")
+               setVisibleAlert(true)
+            }
+      }catch(e){
+        console.log("Erro: ", e)
+         setLoadingSave(false)
+                setDescriptionMsg("")
+                setTiteMsg(`ocorreu um erro ao tentar registrar o usuario!`)
+               setVisibleAlert(true)
+      }finally{
+          setLoadingSave(false)
       }
+       
   }
- 
+
  
   return (
   <>
@@ -60,12 +99,8 @@ export function DrawerEditUser({usuario, openDrawer , setOpenDrawer}:props) {
 
           </DrawerHeader>
            {  loadingSave ?
-            <div className="grid gap-3 h-70">
               <ThreeDot color="black" />
-            </div>
             :
-
-            <>
               <div className="grid gap-3">
 
                 <DrawerTitle className=" text-start" >Nome  </DrawerTitle>
@@ -87,32 +122,34 @@ export function DrawerEditUser({usuario, openDrawer , setOpenDrawer}:props) {
                       />
                 
               </div>
+               }
+                   
               <DrawerFooter>
                 <Button
-            disabled={true}
-          onClick={() => save()}
+                onClick={() => save()}
                  >Salvar</Button>
                 <DrawerClose asChild>
                   <Button 
                   variant="outline" onClick={ ()=> setOpenDrawer(false)}>Cancel</Button>
                 </DrawerClose>
               </DrawerFooter>
-            </>
-          }
+         
+         
         </div>
       </DrawerContent>
 
     </Drawer>
     {
 
-      /* <Alert
-            description={descriptionMsgTestConnection}
-            setVisible={setVisibleAlertTestConnection}
-            title={titleMsgTestConnection}
-            visible={visibleAlertTestConnection}
+       <Alert
+            description={descriptionMsg}
+            setVisible={setVisibleAlert}
+            title={titleMsg}
+            visible={visibleAlert}
           />
-    */}
+     }
  
+
 </>
 
 
