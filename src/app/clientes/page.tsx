@@ -64,7 +64,7 @@ export default function PageClientes (){
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader />
+        <SiteHeader pageName="Clientes" />
         <div className="flex flex-1 flex-col mt-2">
          <div className=" w-4/12 ml-10" >
            <Input

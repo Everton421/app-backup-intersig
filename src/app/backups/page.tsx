@@ -85,13 +85,16 @@ export default function PageBackups() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader />
+        <SiteHeader pageName="Backups" />
         <div className="flex flex-1 mt-2  " >
-         <div className=" w-4/12 ml-10" >
+         <div className=" w-4/12 ml-10 flex " >
+
            <Input
             onChange={(e)=> setPesquisa(e.target.value)}
            placeholder="pesquisar:"
            />
+   
+
           </div>
 
        </div>

@@ -18,7 +18,7 @@ import { ThreeDot } from 'react-loading-indicators'
 import { clientsRequest } from "@/app/@types/clients"
 import { DialogTitle } from "../ui/dialog"
 import { SelectEfetuarBackup } from "../select-efetuar-backup/select-efetuar-bakup"
-import { api } from "@/app/services/api"
+import { configApi } from "@/app/services/api"
 import { Alert } from "../alert/alert"
 import { IconSend, IconSettingsCog } from "@tabler/icons-react"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
@@ -31,6 +31,8 @@ type props = {
 }
  
 export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
+
+  const api = configApi();
 
   const [loadingSave, setLoadingSave] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
@@ -74,10 +76,12 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
     const dataPatch:dataUpdate = {
         efetuar_backup: client.efetuar_backup,
         hora_agenda_backup: client.hora_agenda_backup || '08:00',
-        portaMysql: client.portaMysql ||  3306 ,
+        portaMysql: String(client.portaMysql) ||  3306 ,
         senhaMysql: client.senhaMysql || '',
         usuarioMysql: client.usuarioMysql 
     }
+     console.log(dataPatch)
+    
     utilsFunctions.patchtBackupCLient(
           {   setDescriptionResponse: setDescriptionMsg,
               setLoadingSave:setLoadingSave ,
@@ -85,8 +89,9 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
               setVisibleAlert: setVisibleAlert,
             },
             dataPatch,
-            String(client.codigo)
-          )
+             client.codigo 
+          )  
+          
     }
 
  function backup(){

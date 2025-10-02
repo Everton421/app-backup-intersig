@@ -27,7 +27,7 @@ export const utils = ()=>{
 
     const { user  } = useAuth();
  
-  async function patchtBackupCLient ( props:propsPutBackup, dataUpdate:dataUpdate, codigo:string )  {
+  async function patchtBackupCLient ( props:propsPutBackup, dataUpdate:dataUpdate, codigo:string | number )  {
          if(!user ) return console.log('usuario nao esta autenticado ') 
        
       const { setOpenDrawer, setDescriptionResponse, setLoadingSave, setTitleResponse,setVisibleAlert } = props
@@ -43,6 +43,9 @@ export const utils = ()=>{
                "portaMysql": String(dataUpdate.portaMysql),
                "usuarioMysql": String(dataUpdate.usuarioMysql),
             },
+             {
+           headers:{ 'Authorization': user.token},
+          }
           
       )
           
