@@ -106,7 +106,7 @@ export const utils = ()=>{
       console.log("Erro : ",e)
         setLoading && setLoading(false)
          setTitleResponse && setTitleResponse('Erro!');
-        setDescriptionResponse && setDescriptionResponse (e.response.data.message)
+        setDescriptionResponse && setDescriptionResponse (e.response.data.msg)
         setVisibleAlert && setVisibleAlert(true)
 
     } finally {

@@ -186,7 +186,8 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                               Testar Conexão
                             </Button>
                           </div>
-                          <div className="items-center flex justify-between">
+
+                          <div className="items-center flex justify-around">
                             <div>
                               <Label htmlFor="username-1" className="m-1">Efetuar backup </Label>
                               <SelectEfetuarBackup efetuarBackup={client.efetuar_backup} list={['S', 'N']} setEfetuarBackup={(i) => { client.efetuar_backup = i }} />
@@ -202,6 +203,17 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                                   }
                                   onChange={(e)=>  client.hora_agenda_backup = e.target.value+':00' }
                               />
+
+                            </div>
+                               <div>
+                              <Label htmlFor="username-1" className="m-1">nome banco de dados</Label>
+                              <Input  
+                              disabled
+                                type=""
+                                defaultValue={ client && client.nomeBanco ?   client.nomeBanco : ''  }
+                                  onChange={(e)=>  client.nomeBanco = e.target.value }
+                              />
+                              
                             </div>
                           </div>
                         </CardContent>

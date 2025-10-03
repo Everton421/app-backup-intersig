@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation"
 type usuario = {
        id: number,
        email_user: string,
-       nome_user:string
+     user_name:string
         senha?:string
       }
 
@@ -63,7 +63,7 @@ export function DrawerEditUser({usuario, openDrawer , setOpenDrawer}:props) {
           const result = await api.put(`/usuarios/${usuario.id}`,{
                 "email": usuario.email_user,
                 "senha": usuario.senha,
-                "nome": usuario.nome_user
+                "nome": usuario.user_name
           },{
               headers:{ 'Authorization': user.token},
           }
@@ -105,8 +105,8 @@ export function DrawerEditUser({usuario, openDrawer , setOpenDrawer}:props) {
 
                 <DrawerTitle className=" text-start" >Nome  </DrawerTitle>
                 <Input placeholder="Nome Fantasia"
-                    defaultValue={usuario && usuario.nome_user}
-                   onChange={(e) => { usuario.nome_user =   String(e.target.value) }}
+                    defaultValue={usuario && usuario.user_name}
+                   onChange={(e) => { usuario.user_name =   String(e.target.value) }}
                 />
 
                <DrawerTitle className=" text-start" >E-mail</DrawerTitle>

@@ -20,9 +20,7 @@ export default function Home() {
     }
   }, [user, loadingAuth, router]);
 
-     if(!user){
-    router.push('/login')
-   }
+ 
    if(isAuthenticated && user){
     router.push('/backups')
    }

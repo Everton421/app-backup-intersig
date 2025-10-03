@@ -13,6 +13,11 @@ import { clientsRequest } from "../@types/clients"
 import { configApi } from "../services/api"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "../contexts/AuthContext"
+import {  SelectActiveClient } from "@/components/select-active-client"
+import { Separator } from "@/components/ui/separator"
+import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup"
+import { SelectConfiguradoEfetuarBackup } from "@/components/select-configurado/select-configurado"
+import { Button } from "@/components/ui/button"
 
 export default function PageBackups() {
   
@@ -20,7 +25,9 @@ export default function PageBackups() {
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ pesquisa, setPesquisa ] = useState<string | null >('')
   const [ orderBy, setOrderBy ] = useState('efetuar_backup')
-    
+   const [ ativos, setAtivos ] = useState<string>('S');
+  const [ configurado , setConfigurado ] = useState<'S'|'N'>('S')
+
   const api = configApi()
     
   const { user,  loadingAuth} = useAuth();
@@ -30,7 +37,7 @@ export default function PageBackups() {
   
     if(!user) return console.log('usuario nao autenticado')
 
-    let query ={ search: pesquisa , orderBy:orderBy  }
+    let query ={ search: pesquisa , orderBy:orderBy , ativo: ativos, efetuar_backup:configurado  }
 
     if(pesquisa !== ''){
       query.search = pesquisa;
@@ -51,7 +58,6 @@ export default function PageBackups() {
       },
 
        );
-       console.log(resultApi)
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data.clientes)
       }
@@ -70,7 +76,7 @@ export default function PageBackups() {
   
       getClients()
 
-  },[ user , pesquisa])
+  },[ user , pesquisa, ativos,configurado])
 
  
 
@@ -87,18 +93,50 @@ export default function PageBackups() {
       <SidebarInset>
         <SiteHeader pageName="Backups" />
         <div className="flex flex-1 mt-2  " >
-         <div className=" w-4/12 ml-10 flex " >
-
+         <div className=" w-4/12 ml-10   items-center flex" >
            <Input
             onChange={(e)=> setPesquisa(e.target.value)}
            placeholder="pesquisar:"
            />
-   
+             <Button className="ml-1 mr-1"
+              onClick={()=> getClients() }
+             >
+               pesquisar
+             </Button>
+          </div>
+          
+              <Separator
+                  orientation="vertical"
+                  className="mx-4 data-[orientation=vertical]:h-15"
+                />
+         <div className=" w-4/12 ml-10  items-center " >
+        <h1 className="text-base font-medium mr-2  "> Situação Clientes </h1>
+              <SelectActiveClient
+                ativos={ativos}
+                setAtivos={setAtivos}
+                values={['S','N']}
+                defaultValueActive="S"    
+               />
+       </div>
+       <Separator
+                    orientation="vertical"
+                    className="mx-4 data-[orientation=vertical]:h-15"
+                  />
+        <div className=" w-4/12 ml-10  items-center " >
+            <h1 className="text-base font-medium mr-2  "> configurado</h1>
+            <SelectConfiguradoEfetuarBackup
+              configurado={configurado}
+              list={['S','N']}
+              setConfigurado={setConfigurado}
+            />
 
           </div>
-
+ 
+     
        </div>
-                
+                 <Separator
+                  className=" mt-2.5 data-[orientation=vertical]:h-9"
+                />
      <div className="flex  w-full h-full flex-col  ">
        <div className="@container/main flex flex-1 flex-col gap-2 itens-start">
          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 ">
@@ -106,14 +144,15 @@ export default function PageBackups() {
              { 
                 
                   ( 
-                   dataClients && dataClients.length > 0 ?     
-                    <TableBackups clients={ dataClients }  />
-                    :
+                   
                       loadingData ? (
                       <div className="flex w-full items-center justify-center">
                           <OrbitProgress variant="track-disc" speedPlus= {4} easing="linear" color="#000" />
                        </div>
                       ) :
+                      dataClients && dataClients.length > 0 ?     
+                    <TableBackups clients={ dataClients }  />
+                    :
                     <div className="flex w-full items-center justify-center">
                           <span className="font-bold text-2xl text-gray-700"> nenhum cliente encontrado!</span> 
                     </div>

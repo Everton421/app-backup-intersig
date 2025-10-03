@@ -6,6 +6,9 @@ import { IconAlertCircleFilled, IconCircleCheckFilled, IconCircleXFilled, IconLo
 import { Badge } from "../ui/badge";
 import { useState } from "react";
 import { DrawerEditBackup } from "../drawer-edit-backup";
+import { Popover, PopoverContent } from "../ui/popover";
+import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type props = 
 {
@@ -39,11 +42,11 @@ return (
     clients.length > 0 ? 
         (
             clients.map((i)=>(
-            <TableRow key={i.codigo} onClick={()=>handleEditBackup(i)}>
-                <TableCell className="font-medium">{i.codigo}</TableCell>
+            <TableRow key={i.codigo}  onClick={()=>handleEditBackup(i)}>
+                <TableCell className="font-medium"   >{i.codigo}</TableCell>
                 
-                <TableCell> <span className=" font-sans ">  { i.nomeFantasia}   </span></TableCell>
-                <TableCell>
+                <TableCell> <span className=" font-sans " >  { i.nomeFantasia}   </span></TableCell>
+                <TableCell  >
                     <span className=" font-sans ">
                       { 
                         i.data_ultimo_backup ? new Date(i.data_ultimo_backup).toLocaleString('pt-br', { day:"numeric",month: "long", year:'numeric' }) 
@@ -52,7 +55,7 @@ return (
                     </span>
 
                </TableCell>
-                  <TableCell>
+                  <TableCell >
                     <span className=" font-sans ">
                       { 
                         i.arquivoMaisRecente
@@ -78,22 +81,31 @@ return (
                            
                      }                      
                       { i.status_backup ===  'erro' && 
-                      <div className="flex font-sans  "> 
-                      <IconCircleXFilled className="fill-red-600 gap-1 ml-1 mr-1 " />
-                        <Badge variant="outline" className="text-muted-foreground px-1.5">
-                            erro 
-                        </Badge>       
-                      </div>
-
+                            <div className="flex font-sans  "> 
+                                 <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex">
+                                  <IconCircleXFilled className="fill-red-600 gap-1 ml-1 mr-1 " />
+                                  <Badge variant="outline" className="text-muted-foreground px-1.5">
+                                      erro 
+                                  </Badge>
+                                  </div>
+                           
+                                 </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{i.msg_backup && i.msg_backup }</p>
+                                </TooltipContent>
+                              </Tooltip>
+                          
+                            </div>
                        }  
                      { i.status_backup ===  'em-andamento' && 
-                      <div className="flex font-sans  "> 
-                         <IconLoader className="fill-gray-700 gap-1 ml-1 mr-1 " />
-                        <Badge variant="outline" className="text-muted-foreground px-1.5">
-                            em-andamento
-                        </Badge>       
-                      </div>
-
+                            <div className="flex font-sans  "> 
+                            <IconLoader className="fill-gray-700 gap-1 ml-1 mr-1 " />
+                            <Badge variant="outline" className="text-muted-foreground px-1.5">
+                                em-andamento
+                            </Badge>       
+                          </div>
                       }  
 
                 </TableCell>

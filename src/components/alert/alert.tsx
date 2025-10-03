@@ -9,10 +9,10 @@ type props = {
      closeDrawer?: Dispatch<SetStateAction<boolean>>
 }
 export function Alert({ title, description,  setVisible, visible, closeDrawer }: props ){
-  function click(){
-setVisible(false) 
- closeDrawer && closeDrawer(false)
-  }
+    function click(){
+        setVisible(false) 
+        closeDrawer && closeDrawer(false)
+    }
         return(
       <AlertDialog open={visible} onOpenChange={()=>{}}>
             <AlertDialogContent>

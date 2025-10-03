@@ -33,6 +33,8 @@ return (
       <TableHead>cnpj</TableHead>
       <TableHead>Data Liberação</TableHead>
       <TableHead  >Acesso</TableHead>
+      <TableHead  >ativo</TableHead>
+
     </TableRow>
   </TableHeader>
   <TableBody>
@@ -90,6 +92,14 @@ return (
 
                          )  } 
                  </TableCell>
+              
+                  <TableCell >
+                    { i.ativo && i.ativo === 'S' ?
+                         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 gap-1 ml-1 mr-1 " />
+                      :
+                         <IconCircleXFilled className="fill-orange-700 gap-1 ml-1 mr-1 "   />     
+                      }
+                   </TableCell>
           
 
                 </TableRow>

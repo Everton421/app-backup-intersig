@@ -5,7 +5,7 @@ import { DrawerEditUser } from "../drawer-edit-user";
 type usuario = {
        id: number,
        email_user: string,
-       nome_user:string
+        user_name:string
 }
 
 type props = {
@@ -41,7 +41,7 @@ return (
             usuarios.map((i)=>(
             <TableRow key={i.id} onClick={()=> handleEditClient(i)}>
                 <TableCell className="font-medium">{i.id}</TableCell>
-                <TableCell> <span className=" font-sans ">  { i.nome_user}   </span></TableCell>
+                <TableCell> <span className=" font-sans ">  { i.user_name}   </span></TableCell>
 
                 </TableRow>
             ))

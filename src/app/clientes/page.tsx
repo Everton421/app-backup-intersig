@@ -10,12 +10,23 @@ import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
 import { useAuth } from "../contexts/AuthContext";
+import { Separator } from "@/components/ui/separator"
+import { SelectActiveClient } from "@/components/select-active-client";
+import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup";
+import { SelectAcessoSistema } from "@/components/select-acesso-sistema/select-acesso-sistema";
+import { Button } from "@/components/ui/button";
 
 export default function PageClientes (){
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
-  
-    const api = configApi()
+  const [ pesquisa, setPesquisa ] = useState<string | null >('')
+   const [ orderBy, setOrderBy ] = useState('efetuar_backup')
+
+
+   const [ ativos, setAtivos ] = useState<string>('S');
+   const [ configurado , setConfigurado ] = useState<'S'|'N'>('S')
+   const [ acesso, setAcesso ] = useState<'L' | 'B' | 'A'>('L')
+  const api = configApi()
   
     const { user , isAuthenticated, loadingAuth } = useAuth();
 
@@ -26,12 +37,27 @@ export default function PageClientes (){
   async function getClients(){
  
     if(!user ) return console.log('usuario nao esta autenticado ') 
+       let query ={ search: pesquisa , orderBy:orderBy , ativo: ativos, 
+      acesso:acesso
+     }
+
+    if(pesquisa !== ''){
+      query.search = pesquisa;
+    }
+    if(orderBy !== ''){
+       query.orderBy = orderBy
+    }
+    let header
+    if(user && user.token){
+       header = { 'authorization': user.token} 
+    }
+
     try{
       setLoadingData(true)
 
        const resultApi = await api.get('/clientes',{
-         headers:{ 'Authorization': user.token}
-
+         headers:{ 'Authorization': user.token},
+          params: query
        });
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data.clientes)
@@ -49,8 +75,8 @@ export default function PageClientes (){
   }
   
   useEffect(()=>{
-  getClients()
-  },[user])
+    getClients()
+  },[user, pesquisa, ativos, acesso])
 
 
   return (
@@ -65,15 +91,50 @@ export default function PageClientes (){
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader pageName="Clientes" />
-        <div className="flex flex-1 flex-col mt-2">
-         <div className=" w-4/12 ml-10" >
+          <div className="flex flex-1 mt-2  " >
+         <div className=" w-4/12 ml-10  flex items-center " >
+        
            <Input
-
+            onChange={(e)=> setPesquisa(e.target.value)}
            placeholder="pesquisar:"
            />
+            <Button className="ml-1 mr-1"
+              onClick={()=> getClients() }
+             >
+               pesquisar
+             </Button>
           </div>
-        </div>
-        
+          
+              <Separator
+                  orientation="vertical"
+                  className="mx-4 data-[orientation=vertical]:h-15"
+                />
+         <div className=" w-4/12 ml-10  items-center " >
+          <h1 className="text-base font-medium mr-2  "> Situação Clientes </h1>
+              <SelectActiveClient
+                ativos={ativos}
+                setAtivos={setAtivos}
+                values={['S','N']}
+                defaultValueActive="S"    
+               />
+       </div>
+       <Separator
+                  orientation="vertical"
+                  className="mx-4 data-[orientation=vertical]:h-15"
+                />
+        <div className=" w-4/12 ml-10  items-center " >
+            <h1 className="text-base font-medium mr-2  "> Acesso</h1>
+            <SelectAcessoSistema
+              acesso={acesso}
+              setAcesso={setAcesso}
+            list={['B', 'L','A']}
+            />
+
+          </div>
+       </div>
+           <Separator
+                  className=" mt-2.5 data-[orientation=vertical]:h-9"
+                />
                 
      <div className="flex  w-full h-full flex-col  ">
           <div className="@container/main flex flex-1 flex-col gap-2 ">
