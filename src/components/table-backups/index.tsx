@@ -109,13 +109,14 @@ return (
                       }  
 
                 </TableCell>
+
                 <TableCell >
                     { i.efetuar_backup && i.efetuar_backup === 'S' ?
                      ( 
                       <div className="flex font-sans  "> 
                          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 ml-1 mr-1" /> 
                          <Badge variant="outline" className="text-muted-foreground px-1.5" >
-                              configurado
+                              configurado {i.hora_agenda_backup}
                         </Badge> 
                       </div>
                      ) : ( 
