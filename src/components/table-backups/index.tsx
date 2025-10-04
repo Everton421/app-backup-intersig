@@ -1,13 +1,9 @@
 import { clientsRequest } from "@/app/@types/clients"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { CircleCheckBig, CircleX } from "lucide-react"
-import { OrbitProgress} from 'react-loading-indicators';
 import { IconAlertCircleFilled, IconCircleCheckFilled, IconCircleXFilled, IconLoader, IconSettingsCancel } from "@tabler/icons-react";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
 import { DrawerEditBackup } from "../drawer-edit-backup";
-import { Popover, PopoverContent } from "../ui/popover";
-import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type props = 
@@ -73,10 +69,20 @@ return (
                     }
                       { i.status_backup === 'pendente' && 
                       <div className="flex font-sans  "> 
-                          <IconAlertCircleFilled className="fill-orange-700 gap-1 ml-1 mr-1 "   />     
-                        <Badge variant="outline" className="text-muted-foreground px-1.5">
-                            pendente
-                          </Badge> 
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex">
+                                <IconAlertCircleFilled className="fill-orange-700 gap-1 ml-1 mr-1 "   />     
+                              <Badge variant="outline" className="text-muted-foreground px-1.5">
+                                  pendente
+                                </Badge> 
+                            </div>
+
+                          </TooltipTrigger>
+                                <TooltipContent>
+                                 <p>{i.msg_backup && i.msg_backup }</p>
+                                </TooltipContent>
+                              </Tooltip>
                       </div>
                            
                      }                      
