@@ -15,7 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 type usuario = {
        id: number,
        email_user: string,
-       nome_user:string
+        user_name:string
 }
 
 export default function PageUsers (){
