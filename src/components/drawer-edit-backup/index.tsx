@@ -88,7 +88,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
      }
 
      console.log(dataPatch)
-  /*
+  
     utilsFunctions.patchtBackupCLient(
           {   setDescriptionResponse: setDescriptionMsg,
               setLoadingSave:setLoadingSave ,
@@ -98,7 +98,6 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
             dataPatch,
              client.codigo 
           )  
-          */   
           
     }
 
