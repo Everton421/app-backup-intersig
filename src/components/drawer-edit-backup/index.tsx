@@ -56,7 +56,8 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
       portaMysql? : string | number,
       usuarioMysql? : string,
       acesso? :  'L' | 'A' | 'B',
-      host:string
+      host:string,
+      nomeBanco:string
     }
 
  
@@ -82,11 +83,12 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
          portaMysql: String(client.portaMysql) ||  3306 ,
          senhaMysql: client.senhaMysql || '',
          usuarioMysql: client.usuarioMysql,
-         host: String(client.host) || ''  
+         host: String(client.host) || '' ,
+         nomeBanco:String(client.nomeBanco)
      }
 
      console.log(dataPatch)
-  
+  /*
     utilsFunctions.patchtBackupCLient(
           {   setDescriptionResponse: setDescriptionMsg,
               setLoadingSave:setLoadingSave ,
@@ -96,7 +98,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
             dataPatch,
              client.codigo 
           )  
-             
+          */   
           
     }
 
@@ -214,7 +216,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                               <Input  
                                 type=""
                                 defaultValue={ client && client.nomeBanco ?   client.nomeBanco : ''  }
-                                  onChange={(e)=>  client.nomeBanco = e.target.value }
+                                  onChange={(e)=>  client.nomeBanco = String(e.target.value) }
                               />
                               
                             </div>
