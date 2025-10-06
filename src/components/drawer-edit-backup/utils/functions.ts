@@ -22,7 +22,8 @@ export const utils = ()=>{
       senhaMysql? : string,
       portaMysql? : string | number,
       usuarioMysql? : string,
-      acesso? :  'L' | 'A' | 'B'
+      acesso? :  'L' | 'A' | 'B',
+      host:string
     }
 
     const { user  } = useAuth();
@@ -42,6 +43,7 @@ export const utils = ()=>{
                "senhaMysql": String(dataUpdate.senhaMysql),
                "portaMysql": String(dataUpdate.portaMysql),
                "usuarioMysql": String(dataUpdate.usuarioMysql),
+               "host": String(dataUpdate.host)
             },
              {
            headers:{ 'Authorization': user.token},

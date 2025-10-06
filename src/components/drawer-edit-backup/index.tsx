@@ -55,7 +55,8 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
       senhaMysql? : string,
       portaMysql? : string | number,
       usuarioMysql? : string,
-      acesso? :  'L' | 'A' | 'B'
+      acesso? :  'L' | 'A' | 'B',
+      host:string
     }
 
  
@@ -75,15 +76,17 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
       return   
     }
 
-    const dataPatch:dataUpdate = {
-        efetuar_backup: client.efetuar_backup,
-        hora_agenda_backup: client.hora_agenda_backup || '08:00',
-        portaMysql: String(client.portaMysql) ||  3306 ,
-        senhaMysql: client.senhaMysql || '',
-        usuarioMysql: client.usuarioMysql 
-    }
+     const dataPatch:dataUpdate = {
+         efetuar_backup: client.efetuar_backup,
+         hora_agenda_backup: client.hora_agenda_backup || '08:00',
+         portaMysql: String(client.portaMysql) ||  3306 ,
+         senhaMysql: client.senhaMysql || '',
+         usuarioMysql: client.usuarioMysql,
+         host: String(client.host) || ''  
+     }
+
      console.log(dataPatch)
-    
+  
     utilsFunctions.patchtBackupCLient(
           {   setDescriptionResponse: setDescriptionMsg,
               setLoadingSave:setLoadingSave ,
@@ -93,6 +96,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
             dataPatch,
              client.codigo 
           )  
+             
           
     }
 
