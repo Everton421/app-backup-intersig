@@ -212,7 +212,6 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                                <div>
                               <Label htmlFor="username-1" className="m-1">nome banco de dados</Label>
                               <Input  
-                              disabled
                                 type=""
                                 defaultValue={ client && client.nomeBanco ?   client.nomeBanco : ''  }
                                   onChange={(e)=>  client.nomeBanco = e.target.value }
