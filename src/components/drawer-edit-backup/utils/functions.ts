@@ -2,7 +2,18 @@ import { clientsRequest } from "@/app/@types/clients"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { configApi } from "@/app/services/api"
 import { Dispatch, SetStateAction } from "react"
-
+ export type dataUpdateConfig =
+      {
+      hora_agenda_backup? : string,
+      efetuar_backup? :  'S' | 'N',
+      senhaMysql? : string,
+      portaMysql? : string | number,
+      usuarioMysql? : string,
+      acesso? :  'L' | 'A' | 'B',
+      host?:string,
+      nomeBanco?:string
+        caminhoBkp?:string
+    }
 
 export const utils = ()=>{
     const api = configApi()
@@ -15,28 +26,17 @@ export const utils = ()=>{
          setDescriptionResponse? : Dispatch<SetStateAction<string>>
     }
         
-    type dataUpdate =
-      {
-      hora_agenda_backup? : string,
-      efetuar_backup? :  'S' | 'N',
-      senhaMysql? : string,
-      portaMysql? : string | number,
-      usuarioMysql? : string,
-      acesso? :  'L' | 'A' | 'B',
-      host?:string,
-        nomeBanco?:string
-    }
+   
 
     const { user  } = useAuth();
  
-  async function patchtBackupCLient ( props:propsPutBackup, dataUpdate:dataUpdate, codigo:string | number )  {
+  async function patchtBackupCLient ( props:propsPutBackup, dataUpdate:dataUpdateConfig, codigo:string | number )  {
          if(!user ) return console.log('usuario nao esta autenticado ') 
        
       const { setOpenDrawer, setDescriptionResponse, setLoadingSave, setTitleResponse,setVisibleAlert } = props
          try {
            
        const resultCreateTask = await api.patch(`/clientes/${codigo}`,   
-      // const resultCreateTask = await api.patch(`/clientes/1`,   
 
             {
                "hora_agenda_backup": String( dataUpdate.hora_agenda_backup),
@@ -45,14 +45,13 @@ export const utils = ()=>{
                "portaMysql": String(dataUpdate.portaMysql),
                "usuarioMysql": String(dataUpdate.usuarioMysql),
                "host": String(dataUpdate.host),
-               "nomeBanco": String( dataUpdate.nomeBanco)
+               "nomeBanco": String( dataUpdate.nomeBanco),
+               "caminhoBkp": String( dataUpdate.caminhoBkp)
             },
              {
-           headers:{ 'Authorization': user.token},
-          }
-          
-      )
-          
+           headers:{ 'Authorization': user.token},  } )
+              
+
           if (resultCreateTask.status === 200) {
             setOpenDrawer &&  setOpenDrawer(false)
             setVisibleAlert && setVisibleAlert(true);

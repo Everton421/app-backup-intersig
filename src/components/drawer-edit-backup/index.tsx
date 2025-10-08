@@ -20,9 +20,8 @@ import { DialogTitle } from "../ui/dialog"
 import { SelectEfetuarBackup } from "../select-efetuar-backup/select-efetuar-bakup"
 import { configApi } from "@/app/services/api"
 import { Alert } from "../alert/alert"
-import { IconSend, IconSettingsCog } from "@tabler/icons-react"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-import { utils } from "./utils/functions"
+import { dataUpdateConfig, utils } from "./utils/functions"
 import { useAuth } from "@/app/contexts/AuthContext"
 
 type props = {
@@ -48,20 +47,6 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
 
   const utilsFunctions = utils();
 
-  type dataUpdate =
-     {
-      hora_agenda_backup? : string,
-      efetuar_backup? :  'S' | 'N',
-      senhaMysql? : string,
-      portaMysql? : string | number,
-      usuarioMysql? : string,
-      acesso? :  'L' | 'A' | 'B',
-      host:string,
-      nomeBanco:string
-    }
-
- 
-
 
   function formatHours(stringHour: string) {
     const horaFormatada = new Date('2023-01-01 ' + stringHour).toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' })
@@ -77,14 +62,15 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
       return   
     }
 
-     const dataPatch:dataUpdate = {
+     const dataPatch:dataUpdateConfig = {
          efetuar_backup: client.efetuar_backup,
          hora_agenda_backup: client.hora_agenda_backup || '08:00',
          portaMysql: String(client.portaMysql) ||  3306 ,
          senhaMysql: client.senhaMysql || '',
          usuarioMysql: client.usuarioMysql,
          host: String(client.host) || '' ,
-         nomeBanco:String(client.nomeBanco)
+         nomeBanco:String(client.nomeBanco),
+          caminhoBkp:String(client.caminhoBkp)
      }
 
      console.log(dataPatch)
@@ -216,6 +202,16 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                                 type=""
                                 defaultValue={ client && client.nomeBanco ?   client.nomeBanco : ''  }
                                   onChange={(e)=>  client.nomeBanco = String(e.target.value) }
+                              />
+                              
+                            </div>
+                               <div>
+                              <Label htmlFor="username-1" className="m-1">Pasta backup</Label>
+                              <Input  
+                                type=""
+                              //  disabled
+                                defaultValue={ client && client.caminhoBkp ?   client.caminhoBkp : ''  }
+                                  onChange={(e)=>  client.caminhoBkp = String(e.target.value) }
                               />
                               
                             </div>

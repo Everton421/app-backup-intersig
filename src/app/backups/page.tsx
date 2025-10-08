@@ -18,15 +18,25 @@ import { Separator } from "@/components/ui/separator"
 import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup"
 import { SelectConfiguradoEfetuarBackup } from "@/components/select-configurado/select-configurado"
 import { Button } from "@/components/ui/button"
+import { SelectOrderBy } from "@/components/select-orderby-backup"
+
+   type valuesOrderBy = { key: string, field:string}[ ];
 
 export default function PageBackups() {
   
   const [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ pesquisa, setPesquisa ] = useState<string | null >('')
-  const [ orderBy, setOrderBy ] = useState('efetuar_backup')
    const [ ativos, setAtivos ] = useState<string>('S');
   const [ configurado , setConfigurado ] = useState<'S'|'N'>('S')
+  const [ orderBy, setOrderBy ] = useState('data_ultimo_backup')
+
+const [ valuesOrderBy ] = useState<valuesOrderBy>([ 
+  {field:'codigo', key:'codigo'},
+  {field:'nome fantasia', key:'nomeFantasia'},
+  {field:'data ultimo backup', key:'data_ultimo_backup'},
+  {field:'hora agenda backup', key:'hora_agenda_backup'} 
+]) 
 
   const api = configApi()
     
@@ -76,7 +86,7 @@ export default function PageBackups() {
   
       getClients()
 
-  },[ user , pesquisa, ativos,configurado])
+  },[ user , pesquisa, ativos,configurado, orderBy])
 
  
 
@@ -92,7 +102,7 @@ export default function PageBackups() {
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader pageName="Backups" />
-        <div className="flex flex-1 mt-2  " >
+        <div className="flex  mt-2 md:flex-row flex-col " >
          <div className=" w-4/12 ml-10   items-center flex" >
            <Input
             onChange={(e)=> setPesquisa(e.target.value)}
@@ -109,21 +119,19 @@ export default function PageBackups() {
                   orientation="vertical"
                   className="mx-4 data-[orientation=vertical]:h-15"
                 />
-         <div className=" w-4/12 ml-10  items-center " >
-        <h1 className="text-base font-medium mr-2  "> Situação Clientes </h1>
+         <div className="  flex items-center justify-center" >
               <SelectActiveClient
                 ativos={ativos}
                 setAtivos={setAtivos}
                 values={['S','N']}
+                placeholder="clientes"
                 defaultValueActive="S"    
                />
-       </div>
+        </div> 
        <Separator
-                    orientation="vertical"
-                    className="mx-4 data-[orientation=vertical]:h-15"
-                  />
-        <div className=" w-4/12 ml-10  items-center " >
-            <h1 className="text-base font-medium mr-2  "> configurado</h1>
+           orientation="vertical"
+            className="mx-4 data-[orientation=vertical]:h-15 " />
+           <div className=" flex items-center justify-center" >
             <SelectConfiguradoEfetuarBackup
               configurado={configurado}
               list={['S','N']}
@@ -131,8 +139,20 @@ export default function PageBackups() {
             />
 
           </div>
- 
-     
+        <Separator
+           orientation="vertical"
+            className="mx-4 data-[orientation=vertical]:h-15 " />
+      <div className=" flex items-center justify-center" >
+            
+            <SelectOrderBy
+              defaultValue={orderBy}
+              setValue={setOrderBy}
+              values={valuesOrderBy}
+
+              />
+
+       </div>
+
        </div>
                  <Separator
                   className=" mt-2.5 data-[orientation=vertical]:h-9"

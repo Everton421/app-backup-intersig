@@ -36,7 +36,7 @@ export function SelectActiveClient( {  ativos,setAtivos, placeholder , values, d
           <SelectItem 
               value={values[0]}
               >
-                { values[0] && values[0] === 'S' && 'ativo' }
+                { values[0] && values[0] === 'S' && 'ativos' }
                 <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400 gap-1 ml-1 mr-1 " />
 
             </SelectItem>
@@ -44,7 +44,7 @@ export function SelectActiveClient( {  ativos,setAtivos, placeholder , values, d
            <SelectItem 
             value={values[1]}
                >
-             {  values[1] && values[1] === 'N' && 'inativo'  } 
+             {  values[1] && values[1] === 'N' && 'inativos'  } 
                      <IconCircleXFilled className="fill-orange-700 gap-1 ml-1 mr-1 "   />     
 
            </SelectItem>
