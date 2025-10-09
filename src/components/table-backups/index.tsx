@@ -43,7 +43,22 @@ return (
             <TableRow key={i.codigo}  onClick={()=>handleEditBackup(i)}>
                 <TableCell className="font-medium"   >{i.codigo}</TableCell>
                 
-                <TableCell> <span className=" font-sans " >  { i.nomeFantasia}   </span></TableCell>
+                <TableCell>
+                   <Tooltip>
+                    <TooltipTrigger asChild>
+                     <span className=" font-sans " > 
+                        { i.nomeFantasia}
+                          </span>
+                       </TooltipTrigger>
+                            <TooltipContent>
+                                  <p>cnpj: {i.cnpj}   </p>
+                                  <p>Razao Social: {i.razaoSocial}  </p>
+                                  <p> Nome Fantasia:  {i.nomeFantasia}  </p>
+                                  <p>Nome Reduz:  {i.nomeReduz}  </p>
+                                  <p>Nome radmin:  {i.nomeRadmin}  </p>
+                                </TooltipContent>
+                   </Tooltip>
+                </TableCell>
                 <TableCell  >
                     <span className=" font-sans ">
                       { 

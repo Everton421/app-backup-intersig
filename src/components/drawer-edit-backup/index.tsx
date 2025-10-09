@@ -116,7 +116,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
           <div className="mx-auto w-[70%]  ">
             <DrawerHeader >
               <DialogTitle>Configurações de backups</DialogTitle>
-              <DrawerDescription>Editando Configurações de backups do cliente {client.nomeFantasia}</DrawerDescription>
+              <DrawerDescription>Editando Configurações de backups do cliente {client.nomeFantasia}  | cnpj: {client.cnpj}</DrawerDescription>
 
             </DrawerHeader>
             {loadingExecBackup ?
