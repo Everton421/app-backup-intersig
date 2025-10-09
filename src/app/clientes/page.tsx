@@ -113,7 +113,7 @@ export default function PageClientes (){
           <h1 className="text-base font-medium mr-2  "> Situação Clientes </h1>
               <SelectActiveClient
                 ativos={ativos}
-                setAtivos={setAtivos}
+                onChange={(value)=> setAtivos(value)}
                 values={['S','N']}
                 defaultValueActive="S"    
                />
