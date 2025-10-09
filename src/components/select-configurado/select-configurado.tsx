@@ -8,13 +8,15 @@ type props=
 { 
     list:  listConfigurado, 
     configurado: configurado , 
-    setConfigurado:(acess:configurado)=>void
+    onChange:(value:configurado)=>void
 }
 
-export function SelectConfiguradoEfetuarBackup( { list , configurado, setConfigurado}:props       ){
+export function SelectConfiguradoEfetuarBackup( { list , configurado, onChange}:props       ){
 
    return (
-    <Select defaultValue={configurado} onValueChange={setConfigurado} >
+    <Select 
+    defaultValue={configurado}
+     onValueChange={(value:configurado)=>onChange(value)} >
       <SelectTrigger className="p-3" >
         <SelectValue placeholder="Selecione o acesso" />
       </SelectTrigger>
@@ -23,7 +25,9 @@ export function SelectConfiguradoEfetuarBackup( { list , configurado, setConfigu
             {
                 list && list.length > 0 &&
                 list.map((i)=>(
-                  <SelectItem   key={i} value={i} onClick={()=> setConfigurado(i)} >
+                  <SelectItem   key={i} value={i}
+                  // onClick={()=> setConfigurado(i)}
+                   >
                        < span>
                         </span>
                        { i ==='S' &&  ( <> configurado <IconSettingsCheck color="green"/> </> )  }

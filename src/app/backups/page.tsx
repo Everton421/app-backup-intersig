@@ -19,42 +19,52 @@ import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-e
 import { SelectConfiguradoEfetuarBackup } from "@/components/select-configurado/select-configurado"
 import { Button } from "@/components/ui/button"
 import { SelectOrderBy } from "@/components/select-orderby-backup"
+import { IconFilter } from "@tabler/icons-react"
+import { SheetfiltroBackup } from "@/components/sheet-filter-backup/sheet-filter-backup"
 
-   type valuesOrderBy = { key: string, field:string}[ ];
+
+   type typeObjectGroupBy = { key: string, field:string}[ ];
+   type typeObjectOrderBy = { key: string, field:string}[ ];
+   type valuesGroupBy =  'host'|'codigo'| 'nomeBanco'
+   type valuesOrderBy =  'nomeFantasia'|'data_ultimo_backup'|'hora_agenda_backup'|'codigo'
+   type activeClient = 'S'|'N'
+    type configuredExecBackup = 'S'|'N'
+
+  export  type filterRequest =
+    {
+      search: string ,
+      orderBy:valuesOrderBy ,
+      groupBy:valuesGroupBy,
+      ativo: activeClient, 
+      efetuar_backup:configuredExecBackup
+    }
 
 export default function PageBackups() {
   
   const [ loadingData, setLoadingData ]= useState(true);
-  const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
-  const [ pesquisa, setPesquisa ] = useState<string | null >('')
-   const [ ativos, setAtivos ] = useState<string>('S');
-  const [ configurado , setConfigurado ] = useState<'S'|'N'>('S')
-  const [ orderBy, setOrderBy ] = useState('data_ultimo_backup')
+  const [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
+  const [ openSheetFilter, setOpenSheetFilter ] = useState(false)
 
-const [ valuesOrderBy ] = useState<valuesOrderBy>([ 
-  {field:'codigo', key:'codigo'},
-  {field:'nome fantasia', key:'nomeFantasia'},
-  {field:'data ultimo backup', key:'data_ultimo_backup'},
-  {field:'hora agenda backup', key:'hora_agenda_backup'} 
-]) 
+
+
+const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
+  {
+    search: '',
+    ativo:'S',
+    efetuar_backup: "S",
+    orderBy: "data_ultimo_backup",
+    groupBy:'codigo'
+  }
+)
 
   const api = configApi()
-    
   const { user,  loadingAuth} = useAuth();
 
 
   async function getClients(){
   
     if(!user) return console.log('usuario nao autenticado')
-
-    let query ={ search: pesquisa , orderBy:orderBy , ativo: ativos, efetuar_backup:configurado  }
-
-    if(pesquisa !== ''){
-      query.search = pesquisa;
-    }
-    if(orderBy !== ''){
-       query.orderBy = orderBy
-    }
+ 
     let header
     if(user && user.token){
        header = { 'authorization': user.token} 
@@ -64,15 +74,13 @@ const [ valuesOrderBy ] = useState<valuesOrderBy>([
       setLoadingData(true)
        const resultApi = await api.get('/clientes', {   
       headers :{ 'authorization': user.token},
-        params: query
+        params: filterRequest
       },
-
        );
       if(resultApi.status === 200 ){
          setDataClients(resultApi.data.clientes)
       }
       setLoadingData(false)
-
     } catch(e){
       setLoadingData(false)
 
@@ -83,12 +91,17 @@ const [ valuesOrderBy ] = useState<valuesOrderBy>([
   }
   
   useEffect(()=>{
-  
       getClients()
+  },[ user ,filterRequest])
 
-  },[ user , pesquisa, ativos,configurado, orderBy])
-
- 
+ function updateFilter( key: keyof filterRequest  ,value : filterRequest[ keyof filterRequest]){
+    setFilterRequest( (prev)=>(
+      {
+        ...prev, 
+          [key]: value,
+      }
+    ))
+ }
 
   return (
     <SidebarProvider
@@ -100,12 +113,19 @@ const [ valuesOrderBy ] = useState<valuesOrderBy>([
       }
     >
       <AppSidebar variant="inset" />
+        <SheetfiltroBackup 
+          open={openSheetFilter} 
+          setOpen={setOpenSheetFilter}
+          filterRequest={filterRequest}
+          updateFilter={updateFilter}
+          />
+
       <SidebarInset>
         <SiteHeader pageName="Backups" />
         <div className="flex  mt-2 md:flex-row flex-col " >
          <div className=" w-4/12 ml-10   items-center flex" >
            <Input
-            onChange={(e)=> setPesquisa(e.target.value)}
+            onChange={(e)=> updateFilter( "search" , e.target.value)}
            placeholder="pesquisar:"
            />
              <Button className="ml-1 mr-1"
@@ -119,39 +139,13 @@ const [ valuesOrderBy ] = useState<valuesOrderBy>([
                   orientation="vertical"
                   className="mx-4 data-[orientation=vertical]:h-15"
                 />
-         <div className="  flex items-center justify-center" >
-              <SelectActiveClient
-                ativos={ativos}
-                setAtivos={setAtivos}
-                values={['S','N']}
-                placeholder="clientes"
-                defaultValueActive="S"    
-               />
-        </div> 
-       <Separator
-           orientation="vertical"
-            className="mx-4 data-[orientation=vertical]:h-15 " />
-           <div className=" flex items-center justify-center" >
-            <SelectConfiguradoEfetuarBackup
-              configurado={configurado}
-              list={['S','N']}
-              setConfigurado={setConfigurado}
-            />
 
-          </div>
-        <Separator
-           orientation="vertical"
-            className="mx-4 data-[orientation=vertical]:h-15 " />
       <div className=" flex items-center justify-center" >
-            
-            <SelectOrderBy
-              defaultValue={orderBy}
-              setValue={setOrderBy}
-              values={valuesOrderBy}
+         <Button onClick={()=>{ setOpenSheetFilter(true) }}>
+           <IconFilter  /> 
+        </Button>
+      </div>
 
-              />
-
-       </div>
 
        </div>
                  <Separator

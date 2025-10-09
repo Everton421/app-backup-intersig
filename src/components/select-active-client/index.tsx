@@ -10,21 +10,23 @@ import * as React from "react"
 } from "@/components/ui/select"
 import { IconAlertCircleFilled, IconCircleCheckFilled, IconCircleXFilled } from "@tabler/icons-react"
 
+   type activeClient = 'S'|'N'
+  
 type props = {
     title?:string,
     placeholder?:string
     values: ['S','N' ],
     defaultValueActive: 'S' | 'N'
     ativos: string 
-    setAtivos:React.Dispatch<React.SetStateAction<string>>
+    onChange: (value:activeClient)=> void
   }
 
-export function SelectActiveClient( {  ativos,setAtivos, placeholder , values, defaultValueActive  } :props )  {
+export function SelectActiveClient( {  ativos,onChange, placeholder , values, defaultValueActive  } :props )  {
   
     return (
     <Select
        defaultValue={ativos && ativos  }
-       onValueChange={(v)=>setAtivos(v)}
+       onValueChange={(value:activeClient)=>onChange( value)}
     >
       <SelectTrigger className="w-[280px]">
         <SelectValue  placeholder={ placeholder && placeholder}   />

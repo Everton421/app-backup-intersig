@@ -21,7 +21,7 @@ type props = {
     onChange: (value: string) =>void
   }
 
-export function SelectOrderBy( {  defaultValue, onChange, placeholder , values    } :props )  {
+export function SelectGroupBy( {  defaultValue, onChange, placeholder , values    } :props )  {
   
     return (
     <Select

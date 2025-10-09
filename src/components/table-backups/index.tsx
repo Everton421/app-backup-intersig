@@ -25,12 +25,14 @@ return (
  
   <TableHeader>
     <TableRow>
-      <TableHead className="w-[100px]">Cód</TableHead>
+      <TableHead >Cód</TableHead>
       <TableHead>Nome</TableHead>
       <TableHead>Último Backup</TableHead>
       <TableHead>Último Arquivo</TableHead>
       <TableHead>Status Backup</TableHead>
-      <TableHead  >efetuar backup</TableHead>
+      <TableHead >efetuar backup</TableHead>
+      <TableHead >banco de dados</TableHead>
+
     </TableRow>
   </TableHeader>
   <TableBody>
@@ -134,6 +136,8 @@ return (
                       </div>
                          )  } 
                  </TableCell>
+                <TableCell> <span className=" font-sans " >  { i.nomeBanco ? i.nomeBanco : null}   </span></TableCell>
+
                 </TableRow>
             ))
         ): null
