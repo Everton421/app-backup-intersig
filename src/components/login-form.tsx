@@ -14,19 +14,22 @@ import { configApi } from "@/app/services/api"
 import { useActionState, useState } from "react"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { useRouter } from "next/navigation"
+import { ThreeDot } from "react-loading-indicators"
 
   const api = configApi();
 
 export function LoginForm({  className, ...props }: React.ComponentProps<"div">) {
 
-const [ email, setEmail ] = useState<string>();
-const [ senha, setSenha ] = useState<string>();
+const [ email, setEmail ] = useState<string>('');
+const [ senha, setSenha ] = useState<string>('');
 const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
+const [ loading, setLoading ] = useState(false);
   const {   login } =  useAuth();
   
   const router = useRouter();
 
   async function loginfunction(){
+
     if(!email || email === '' || email === undefined){
       setMsg({ erro:true, msg:'nenhum email informado!'})
       return
@@ -37,13 +40,17 @@ const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
     }
     
     try{
+      setLoading(true)
       const result = await api.post('/login', { email:email, senha:senha}) 
         if(result.status === 200 ){
+          setLoading(false)
             login( email, result.data.token)
             router.push('/backups')
-        }
-     //   console.log(result.data)
+          }
+        console.log(result.data)
     }catch(e:any){
+          setLoading(false) 
+ 
         console.log("Erro no login", e )
         if(e.response.status === 500 ){
          setMsg({ erro:true, msg:`Erro interno no servidor!`})
@@ -51,12 +58,22 @@ const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
         if(e.response.status === 400 && e.response.data.msg ){
          setMsg({ erro:true, msg:`${e.response.data.msg}`})
         }
+      }finally{
+          setLoading(false)
+         setMsg(undefined)
+
       }
   
     } 
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+     {  loading ? 
+    <div className="flex items-center justify-center">
+      <ThreeDot color='black' size='large' /> 
+    </div>
+      
+      : 
       <Card>
         <CardHeader>
           <CardTitle > Login to your account</CardTitle>
@@ -102,6 +119,7 @@ const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
          
         </CardContent>
       </Card>
+  }
     </div>
   )
 }
