@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation";
+import ThemeSwitcher from "./theme-switcher";
 
 export function SiteHeader({ pageName  }: {pageName? :string }) {
     const { user , logout} = useAuth();
@@ -18,6 +19,8 @@ export function SiteHeader({ pageName  }: {pageName? :string }) {
         />
         <h1 className="text-base font-medium"> { pageName ? pageName : 'Documents'}</h1>
         <div className="ml-auto flex items-center gap-2 bg-rred-700">
+            
+          <ThemeSwitcher/>
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <span>
                { user && user && user.user_name}

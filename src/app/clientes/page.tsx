@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { clientsRequest } from "../@types/clients";
 import { configApi } from "../services/api";
 import { TableBackups } from "@/components/table-backups";
-import { OrbitProgress } from "react-loading-indicators";
+import { OrbitProgress, ThreeDot } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
 import { useAuth } from "../contexts/AuthContext";
 import { Separator } from "@/components/ui/separator"
@@ -15,9 +15,11 @@ import { SelectActiveClient } from "@/components/select-active-client";
 import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup";
 import { SelectAcessoSistema } from "@/components/select-acesso-sistema/select-acesso-sistema";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export default function PageClientes (){
-  const [ loadingData, setLoadingData ]= useState(true);
+  const  [ loadingData, setLoadingData ]= useState(true);
   const  [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ pesquisa, setPesquisa ] = useState<string | null >('')
    const [ orderBy, setOrderBy ] = useState('efetuar_backup')
@@ -26,18 +28,31 @@ export default function PageClientes (){
    const [ ativos, setAtivos ] = useState<string>('S');
    const [ configurado , setConfigurado ] = useState<'S'|'N'>('S')
    const [ acesso, setAcesso ] = useState<'L' | 'B' | 'A'>('L')
-  const api = configApi()
-  
+  const [ loading, setLoading ] = useState(false);
+
+    const api = configApi()
+    const { theme } = useTheme();
     const { user , isAuthenticated, loadingAuth } = useAuth();
-
-    if(loadingAuth){
-      setLoadingData(true)
-    }
-
-  async function getClients(){
+    const router = useRouter();
+    
+   useEffect(()=>{
+     if(loadingAuth){
+       setLoading(true)
+     } else{
+     if( user && !loadingAuth ){
+       setLoading(false);
+      }
+     }
  
-    if(!user ) return console.log('usuario nao esta autenticado ') 
-       let query ={ search: pesquisa , orderBy:orderBy , ativo: ativos, 
+   },[loadingAuth, user ])
+     
+
+  async function getClients(user:{ user_name:string, token:string} | null ){
+     
+    if(!user || !user.token  )  { 
+      return  router.push('/login') 
+    }
+      let query ={ search: pesquisa , orderBy:orderBy , ativo: ativos, 
       acesso:acesso
      }
 
@@ -75,11 +90,24 @@ export default function PageClientes (){
   }
   
   useEffect(()=>{
-    getClients()
-  },[user, pesquisa, ativos, acesso])
+    if( !loadingAuth){
+      if(!user || !user.token|| user === null  ){
+        router.push('/login');
+      }else{
+       getClients(user)
+      }
+    }
+
+  },[user,   pesquisa, ativos, acesso])
+
 
 
   return (
+    loading ? 
+    <div className="flex-1 w-full">
+      <ThreeDot  color="black"/>
+    </div>
+    : 
     <SidebarProvider
       style={
         {
@@ -99,7 +127,7 @@ export default function PageClientes (){
            placeholder="pesquisar:"
            />
             <Button className="ml-1 mr-1"
-              onClick={()=> getClients() }
+              onClick={()=> getClients(user) }
              >
                pesquisar
              </Button>
@@ -149,7 +177,7 @@ export default function PageClientes (){
                     :
                       loadingData ? (
                       <div className="flex w-full items-center justify-center">
-                          <OrbitProgress variant="track-disc" speedPlus= {4} easing="linear" color="#000" />
+                          <OrbitProgress variant="track-disc" speedPlus= {4} easing="linear" color={ theme ==='dark' ? '#FFF' : '#000'}/>
                        </div>
                       ) :
                     <div className="flex w-full items-center justify-center">

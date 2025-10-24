@@ -11,6 +11,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
 import { TableUsers } from "@/components/table-usuarios";
 import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 type usuario = {
        id: number,
@@ -23,10 +24,13 @@ export default function PageUsers (){
   const [ dataUsers, setDataUsers ] = useState<usuario[]>( )
 
       const api = configApi()
-    const { user } = useAuth();
+    const { user,loadingAuth } = useAuth();
+    const router = useRouter();
 
-  async function getUsers(){
-    if(!user ) return console.log('usuario nao autenticado')
+  async function getUsers(user:{ user_name:string, token:string} | null){
+      if(!user || !user.token  )  { 
+      return  router.push('/login') 
+    }
     try{
       setLoadingData(true)
        const resultApi = await api.get('/usuarios',{
@@ -48,8 +52,14 @@ export default function PageUsers (){
   }
   
   useEffect(()=>{
-  getUsers()
-  },[user])
+    if(!loadingAuth){
+      if(!user || !user.token){
+           router.push('/login');
+      }else{
+        getUsers(user);
+      }
+    }
+  },[user, loadingAuth])
 
 
   return (

@@ -13,18 +13,14 @@ import { clientsRequest } from "../@types/clients"
 import { configApi } from "../services/api"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "../contexts/AuthContext"
-import {  SelectActiveClient } from "@/components/select-active-client"
 import { Separator } from "@/components/ui/separator"
-import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup"
-import { SelectConfiguradoEfetuarBackup } from "@/components/select-configurado/select-configurado"
 import { Button } from "@/components/ui/button"
-import { SelectOrderBy } from "@/components/select-orderby-backup"
 import { IconFilter } from "@tabler/icons-react"
 import { SheetfiltroBackup } from "@/components/sheet-filter-backup/sheet-filter-backup"
+import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 
 
-   type typeObjectGroupBy = { key: string, field:string}[ ];
-   type typeObjectOrderBy = { key: string, field:string}[ ];
    type valuesGroupBy =  'host'|'codigo'| 'nomeBanco'
    type valuesOrderBy =  'nomeFantasia'|'data_ultimo_backup'|'hora_agenda_backup'|'codigo'
    type activeClient = 'S'|'N'
@@ -44,8 +40,9 @@ export default function PageBackups() {
   const [ loadingData, setLoadingData ]= useState(true);
   const [ dataClients, setDataClients ] = useState<clientsRequest[]>( )
   const [ openSheetFilter, setOpenSheetFilter ] = useState(false)
+  const [ loading, setLoading ] = useState(false);
 
-
+  const { theme } = useTheme();
 
 const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
   {
@@ -58,17 +55,29 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
 )
 
   const api = configApi()
+  const router = useRouter();
+
   const { user,  loadingAuth} = useAuth();
 
+   useEffect(()=>{
+     if(loadingAuth){
+       setLoading(true)
+     } else{
+     if( user && !loadingAuth ){
+       setLoading(false);
+     }
+     }
+ 
+   },[loadingAuth, user ])
 
-  async function getClients(){
+  async function getClients(user:{ user_name:string, token:string} ){
   
-    if(!user) return console.log('usuario nao autenticado')
  
     let header
+     
     if(user && user.token){
        header = { 'authorization': user.token} 
-    }
+    } 
 
       try{
       setLoadingData(true)
@@ -91,7 +100,15 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
   }
   
   useEffect(()=>{
-      getClients()
+    
+    if(!loadingAuth){
+        if(!user || !user.token || user === null ){
+           router.push('/login')
+        }else{
+        getClients(user)
+        }
+    } 
+
   },[ user ,filterRequest])
 
  function updateFilter( key: keyof filterRequest  ,value : filterRequest[ keyof filterRequest]){
@@ -104,7 +121,14 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
  }
 
   return (
-    <SidebarProvider
+    <>
+     {
+      loading ? 
+      <div className="flex-1 w-full">
+         <ThreeDot  color="black" />
+      </div>
+      :
+      <SidebarProvider
       style={
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -129,7 +153,7 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
            placeholder="pesquisar:"
            />
              <Button className="ml-1 mr-1"
-              onClick={()=> getClients() }
+              onClick={()=> {   user && getClients(user)  } }
              >
                pesquisar
              </Button>
@@ -161,7 +185,7 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
                    
                       loadingData ? (
                       <div className="flex w-full items-center justify-center">
-                          <OrbitProgress variant="track-disc" speedPlus= {4} easing="linear" color="#000" />
+                          <OrbitProgress variant="track-disc" speedPlus= {4} easing="linear" color={ theme ==='dark' ? '#FFF' : '#000'} />
                        </div>
                       ) :
                       dataClients && dataClients.length > 0 ?     
@@ -177,6 +201,8 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
           </div>
         </div>
       </SidebarInset>
-    </SidebarProvider>
+      </SidebarProvider>
+    }
+  </>
   )
 }

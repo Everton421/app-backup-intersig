@@ -15,6 +15,7 @@ import { useActionState, useState } from "react"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import { ThreeDot } from "react-loading-indicators"
+import Image from "next/image"
 
   const api = configApi();
 
@@ -24,10 +25,10 @@ const [ email, setEmail ] = useState<string>('');
 const [ senha, setSenha ] = useState<string>('');
 const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
 const [ loading, setLoading ] = useState(false);
-  const {   login } =  useAuth();
   
   const router = useRouter();
-
+  const { setUser } = useAuth();
+  
   async function loginfunction(){
 
     if(!email || email === '' || email === undefined){
@@ -43,11 +44,13 @@ const [ loading, setLoading ] = useState(false);
       setLoading(true)
       const result = await api.post('/login', { email:email, senha:senha}) 
         if(result.status === 200 ){
-          setLoading(false)
-            login( email, result.data.token)
-            router.push('/backups')
+            const token = result.data.token
+            const user_name =email 
+             setUser({user_name, token })
+            localStorage.setItem('authUser', JSON.stringify({ user_name, token }));  
+          router.push('/backups');
+           setLoading(false);
           }
-        console.log(result.data)
     }catch(e:any){
           setLoading(false) 
  
@@ -75,6 +78,8 @@ const [ loading, setLoading ] = useState(false);
       
       : 
       <Card>
+      
+
         <CardHeader>
           <CardTitle > Login to your account</CardTitle>
           {
