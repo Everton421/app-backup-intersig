@@ -119,49 +119,52 @@ export default function PageClientes (){
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader pageName="Clientes" />
-          <div className="flex flex-1 mt-2  " >
-         <div className=" w-4/12 ml-10  flex items-center " >
+       <div className="md:flex flex-1 mt-2  " >
+          <div className=" w-full md:w-4/12 ml-10 flex items-center " >
         
            <Input
             onChange={(e)=> setPesquisa(e.target.value)}
-           placeholder="pesquisar:"
+             placeholder="pesquisar:"
+            className="w-[250px] md:w-[550px] "
            />
-            <Button className="ml-1 mr-1"
-              onClick={()=> getClients(user) }
-             >
+            <Button className="ml-1 mr-1 max-w-[65px] md:max-w-65 md:text-[15px] text-[12px]"
+              onClick={()=> {   user && getClients(user)  } }  >
                pesquisar
              </Button>
           </div>
           
               <Separator
                   orientation="vertical"
-                  className="mx-4 data-[orientation=vertical]:h-15"
+                  className=" hidden mx-4 data-[orientation=vertical]:h-15"
                 />
-         <div className=" w-4/12 ml-10  items-center " >
-          <h1 className="text-base font-medium mr-2  "> Situação Clientes </h1>
-              <SelectActiveClient
-                ativos={ativos}
-                onChange={(value)=> setAtivos(value)}
-                values={['S','N']}
-                defaultValueActive="S"    
-               />
-       </div>
-       <Separator
-                  orientation="vertical"
-                  className="mx-4 data-[orientation=vertical]:h-15"
+        <div className="flex md:w-full md:items-center md:justify-center">
+          <div className=" w-4/12 ml-10  items-center " >
+            <h1 className="text-[12px] md:text-base font-medium mr-2 mt-1  "> Situação Clientes </h1>
+                <SelectActiveClient
+                  ativos={ativos}
+                  onChange={(value)=> setAtivos(value)}
+                  values={['S','N']}
+                  defaultValueActive="S"    
                 />
-        <div className=" w-4/12 ml-10  items-center " >
-            <h1 className="text-base font-medium mr-2  "> Acesso</h1>
-            <SelectAcessoSistema
-              acesso={acesso}
-              setAcesso={setAcesso}
-            list={['B', 'L','A']}
-            />
+          </div>
 
+            <Separator
+                    orientation="vertical"
+                    className=" hidden mx-4 data-[orientation=vertical]:h-15"
+                  />
+          <div className=" w-4/12 ml-10  items-center " >
+              <h1 className="text-[12px] md:text-base  font-medium mr-2  "> Acesso</h1>
+              <SelectAcessoSistema
+                acesso={acesso}
+                setAcesso={setAcesso}
+              list={['B', 'L','A']}
+              />
+
+            </div>
           </div>
        </div>
            <Separator
-                  className=" mt-2.5 data-[orientation=vertical]:h-9"
+                  className="hi mt-2.5 data-[orientation=vertical]:h-9"
                 />
                 
      <div className="flex  w-full h-full flex-col  ">
@@ -191,7 +194,7 @@ export default function PageClientes (){
  
             </div>
           </div>
-        </div>
+     </div>
       </SidebarInset>
     </SidebarProvider>
   )

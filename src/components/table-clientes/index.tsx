@@ -43,11 +43,11 @@ return (
         (
             clients.map((i)=>(
             <TableRow key={i.codigo} onClick={()=> handleEditClient(i)}>
-                <TableCell className="font-medium">{i.codigo}</TableCell>
+                <TableCell className="font-medium md:text-[15px] text-[10px] ">{i.codigo}</TableCell>
                 
-                <TableCell> <span className=" font-sans ">  { i.nomeFantasia}   </span></TableCell>
+                <TableCell> <span className=" font-sans md:text-[15px] text-[10px]">  { i.nomeFantasia}   </span></TableCell>
                 <TableCell>
-                    <span className=" font-sans ">
+                    <span className=" font-sans md:text-[15px] text-[10px]">
                       { 
                          i.cnpj
                       }

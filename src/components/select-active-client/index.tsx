@@ -28,7 +28,7 @@ export function SelectActiveClient( {  ativos,onChange, placeholder , values, de
        defaultValue={ativos && ativos  }
        onValueChange={(value:activeClient)=>onChange( value)}
     >
-      <SelectTrigger className="w-[280px]">
+      <SelectTrigger className=" min-w-[100px] md:w-[280px] ">
         <SelectValue  placeholder={ placeholder && placeholder}   />
       </SelectTrigger>
       <SelectContent>
@@ -53,6 +53,6 @@ export function SelectActiveClient( {  ativos,onChange, placeholder , values, de
 
         </SelectGroup>
       </SelectContent>
-    </Select>
+    </Select> 
   )
 }

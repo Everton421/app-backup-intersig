@@ -17,7 +17,7 @@ export function SelectConfiguradoEfetuarBackup( { list , configurado, onChange}:
     <Select 
     defaultValue={configurado}
      onValueChange={(value:configurado)=>onChange(value)} >
-      <SelectTrigger className="p-3" >
+      <SelectTrigger className=" min-w-[100px] md:w-[280px] p-2" >
         <SelectValue placeholder="Selecione o acesso" />
       </SelectTrigger>
       <SelectContent>

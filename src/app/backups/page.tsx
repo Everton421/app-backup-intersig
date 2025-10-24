@@ -100,7 +100,6 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
   }
   
   useEffect(()=>{
-    
     if(!loadingAuth){
         if(!user || !user.token || user === null ){
            router.push('/login')
@@ -108,7 +107,6 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
         getClients(user)
         }
     } 
-
   },[ user ,filterRequest])
 
  function updateFilter( key: keyof filterRequest  ,value : filterRequest[ keyof filterRequest]){
@@ -146,13 +144,14 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
 
       <SidebarInset>
         <SiteHeader pageName="Backups" />
-        <div className="flex  mt-2 md:flex-row flex-col " >
-         <div className=" w-4/12 ml-10   items-center flex" >
+        <div className="flex  mt-2 flex-row  " >
+         <div className=" w-full md:w-4/12 ml-10   items-center flex" >
            <Input
             onChange={(e)=> updateFilter( "search" , e.target.value)}
-           placeholder="pesquisar:"
-           />
-             <Button className="ml-1 mr-1"
+             placeholder="pesquisar:"
+            className="w-[250px] md:w-[550px] "
+            />
+             <Button className="ml-1 mr-1 max-w-[45px] md:max-w-65 md:text-[15px] text-[10px]"
               onClick={()=> {   user && getClients(user)  } }
              >
                pesquisar
@@ -161,7 +160,7 @@ const [filterRequest, setFilterRequest  ] = useState<filterRequest>(
           
               <Separator
                   orientation="vertical"
-                  className="mx-4 data-[orientation=vertical]:h-15"
+                  className="md:mx-4 mx-1  data-[orientation=vertical]:h-15 "
                 />
 
       <div className=" flex items-center justify-center" >

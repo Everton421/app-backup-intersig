@@ -25,13 +25,13 @@ return (
  
   <TableHeader>
     <TableRow>
-      <TableHead >Cód</TableHead>
-      <TableHead>Nome</TableHead>
-      <TableHead>Último Backup</TableHead>
-      <TableHead>Último Arquivo</TableHead>
-      <TableHead>Status Backup</TableHead>
-      <TableHead >efetuar backup</TableHead>
-      <TableHead >banco de dados</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]">Cód</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]">Nome</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]">Último Backup</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]">Último Arquivo</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]">Status Backup</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]" >efetuar backup</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]" >banco de dados</TableHead>
 
     </TableRow>
   </TableHeader>
@@ -41,12 +41,12 @@ return (
         (
             clients.map((i)=>(
             <TableRow key={i.codigo}  onClick={()=>handleEditBackup(i)}>
-                <TableCell className="font-medium"   >{i.codigo}</TableCell>
+                <TableCell className="font-medium md:text-[15px] text-[10px]"   >{i.codigo}</TableCell>
                 
                 <TableCell>
                    <Tooltip>
                     <TooltipTrigger asChild>
-                     <span className=" font-sans " > 
+                     <span className=" font-sans md:text-[15px] text-[10px] " > 
                         { i.nomeFantasia}
                           </span>
                        </TooltipTrigger>
@@ -60,7 +60,7 @@ return (
                    </Tooltip>
                 </TableCell>
                 <TableCell  >
-                    <span className=" font-sans ">
+                    <span className=" font-sans md:text-[15px] text-[10px] ">
                       { 
                         i.data_ultimo_backup ? new Date(i.data_ultimo_backup).toLocaleString('pt-br', { day:"numeric",month: "long", year:'numeric' }) 
                         : '00-00-0000'
@@ -69,7 +69,7 @@ return (
 
                </TableCell>
                   <TableCell >
-                    <span className=" font-sans ">
+                    <span className=" font-sans md:text-[15px] text-[10px] ">
                       { 
                         i.arquivoMaisRecente
                         }

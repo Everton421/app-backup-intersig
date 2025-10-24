@@ -28,7 +28,7 @@ export function SelectOrderBy( {  defaultValue, onChange, placeholder , values  
        defaultValue={defaultValue && defaultValue  }
        onValueChange={(value)=>onChange(value)}
     >
-      <SelectTrigger className="w-[280px]">
+      <SelectTrigger className=" min-w-[100px] md:w-[280px] ">
         <SelectValue  placeholder={ placeholder && placeholder}   />
       </SelectTrigger>
       <SelectContent>

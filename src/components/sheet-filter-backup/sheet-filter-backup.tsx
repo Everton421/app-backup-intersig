@@ -78,8 +78,8 @@ const [ valuesGroupBy  ] = useState<typeObjectGrouperBy>([
                />
                </div>
 
-              <div className=" mt-3 items-start  ">
-                <Label className="mb-1">  Configurados para efetuar backup</Label>
+              <div className="flex flex-col mt-3 items-center justify-center ">
+                <Label className="mb-1 text-center">  Configurados para efetuar backup</Label>
                 <SelectConfiguradoEfetuarBackup
                   configurado={filterRequest.efetuar_backup}
                   list={['S','N']}

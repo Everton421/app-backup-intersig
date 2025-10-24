@@ -10,6 +10,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/app/contexts/AuthContext"
+import { LogOut } from "lucide-react"
 
 export function NavMain({ items, }: {
   items: {
@@ -18,6 +21,9 @@ export function NavMain({ items, }: {
     icon?: Icon }[] })
 
 {
+  const router = useRouter();
+
+  const { logout } = useAuth();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -52,6 +58,16 @@ export function NavMain({ items, }: {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
+             <Button variant="default"
+            onClick={()=>{
+              logout()
+              router.push('/login')
+            }}
+           className=" md:hidden md:text-base text-[10px]  "
+          >
+           <LogOut /> logout
+          </Button> 
+         
       </SidebarGroupContent>
     </SidebarGroup>
   )

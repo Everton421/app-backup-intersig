@@ -15,7 +15,7 @@ export function SelectEfetuarBackup( { list , efetuarBackup, setEfetuarBackup}:p
 
    return (
     <Select defaultValue={efetuarBackup} onValueChange={setEfetuarBackup} >
-      <SelectTrigger className="p-3" >
+      <SelectTrigger className="p-3 "  >
         <SelectValue placeholder="Selecione o acesso" />
       </SelectTrigger>
       <SelectContent>
