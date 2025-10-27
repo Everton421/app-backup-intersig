@@ -29,11 +29,11 @@ type props = {
   openDrawer: boolean,
   setOpenDrawer: Dispatch<SetStateAction<boolean>>
 }
- 
+
 export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
 
   const api = configApi();
-    const { user  } = useAuth();
+  const { user } = useAuth();
 
   const [loadingSave, setLoadingSave] = useState(false);
   const [visibleAlert, setVisibleAlert] = useState(false);
@@ -53,61 +53,62 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
     return horaFormatada
   }
 
-  function patch(){
-   
-    if(!client.usuarioMysql || client.usuarioMysql === ''){
-        setVisibleAlert(true);
-        setTitleMsg('Erro');
-        setDescriptionMsg("É necessario informar o usuario do mysql")
-      return   
+  function patch() {
+
+    if (!client.usuarioMysql || client.usuarioMysql === '') {
+      setVisibleAlert(true);
+      setTitleMsg('Erro');
+      setDescriptionMsg("É necessario informar o usuario do mysql")
+      return
     }
 
-     const dataPatch:dataUpdateConfig = {
-         efetuar_backup: client.efetuar_backup,
-         hora_agenda_backup: client.hora_agenda_backup || '08:00',
-         portaMysql: String(client.portaMysql) ||  3306 ,
-         senhaMysql: client.senhaMysql || '',
-         usuarioMysql: client.usuarioMysql,
-         host: String(client.host) || '' ,
-         nomeBanco:String(client.nomeBanco),
-          caminhoBkp:String(client.caminhoBkp)
-     }
+    const dataPatch: dataUpdateConfig = {
+      efetuar_backup: client.efetuar_backup,
+      hora_agenda_backup: client.hora_agenda_backup || '08:00',
+      portaMysql: String(client.portaMysql) || 3306,
+      senhaMysql: client.senhaMysql || '',
+      usuarioMysql: client.usuarioMysql,
+      host: String(client.host) || '',
+      nomeBanco: String(client.nomeBanco),
+      caminhoBkp: String(client.caminhoBkp)
+    }
 
-     console.log(dataPatch)
-  
+    console.log(dataPatch)
+
     utilsFunctions.patchtBackupCLient(
-          {   setDescriptionResponse: setDescriptionMsg,
-              setLoadingSave:setLoadingSave ,
-              setTitleResponse: setTitleMsg,
-              setVisibleAlert: setVisibleAlert,
-            },
-            dataPatch,
-             client.codigo 
-          )  
-          
-    }
-
- function backup(){
-    utilsFunctions.execBackup(client.codigo, 
       {
-        setDescriptionResponse:setDescriptionMsg,
-         setLoading: setLoadingSave,
-         setTitleResponse: setTitleMsg,
-         setVisibleAlert: setVisibleAlert, 
-       }
+        setDescriptionResponse: setDescriptionMsg,
+        setLoadingSave: setLoadingSave,
+        setTitleResponse: setTitleMsg,
+        setVisibleAlert: setVisibleAlert,
+      },
+      dataPatch,
+      client.codigo
     )
- }
- 
 
- function connection(){
-  utilsFunctions.testConnection(client,{
-    setDescriptionResponse:  setTitleMsg,
-    setLoading: setLoadingSave, 
-    setTitleResponse:setDescriptionMsg,
-    setVisibleAlert: setVisibleAlertConnection,
-     setLoadingTestConnection: setLoadingTestConnection
-  })
- }
+  }
+
+  function backup() {
+    utilsFunctions.execBackup(client.codigo,
+      {
+        setDescriptionResponse: setDescriptionMsg,
+        setLoading: setLoadingSave,
+        setTitleResponse: setTitleMsg,
+        setVisibleAlert: setVisibleAlert,
+      }
+    )
+  }
+
+
+  function connection() {
+    utilsFunctions.testConnection(client, {
+      setDescriptionResponse: setTitleMsg,
+      setLoading: setLoadingSave,
+      setTitleResponse: setDescriptionMsg,
+      setVisibleAlert: setVisibleAlertConnection,
+      setLoadingTestConnection: setLoadingTestConnection
+    })
+  }
 
   return (
     <>
@@ -126,7 +127,7 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
               :
               <>
                 <div className="grid gap-3  ">
-          
+
                   {
                     loadingTestConnection ?
                       <div className="border-1 p-1 rounded-2xl items-center flex justify-center ">
@@ -139,84 +140,94 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
                         </CardHeader>
                         <CardContent >
                           <div className="flex justify-between w-full">
-                           <div className="md:flex  md:justify-between w-full ">
-                              <div className="">
-                                <DrawerTitle className=" text-start" >Host</DrawerTitle>
+                            <div className="md:flex md:items-center md:justify-between w-full ">
+                              <div className="ml-1 mr-1">
+                                <DrawerTitle className=" text-start text-[12px]" >Host</DrawerTitle>
                                 <Input placeholder="Host"
                                   defaultValue={client && client.host}
                                   onChange={(e) => { client.host = e.target.value }}
+                                  className=" text-start text-[12px]"
                                 />
                               </div>
-                              <div>
-                                <DrawerTitle className=" text-start" >Usuário</DrawerTitle>
-                                <Input placeholder="Usuário"
+                              <div className="ml-1 mr-1">
+                                <DrawerTitle className=" text-start text-[12px]" >Usuário</DrawerTitle>
+                                <Input
+                                  placeholder="Usuário"
                                   defaultValue={client && String(client.usuarioMysql)}
                                   onChange={(e) => client.usuarioMysql = String(e.target.value)}
+                                  className=" text-start text-[12px]"
                                 />
                               </div>
                             </div>
-                           <div className="md:flex  md:justify-between w-full ">
-                                <DrawerTitle className=" text-start" >Senha</DrawerTitle>
+                            <div className="md:flex md:items-center md:justify-around w-full ">
+                              <div className="ml-1 mr-1">
+                                <DrawerTitle className=" text-start text-[12px]" >Senha</DrawerTitle>
                                 <Input placeholder="Senha"
-                                  //type="password"
+                                  type="password"
+                                  className=" text-start text-[12px]"
                                   defaultValue={client && String(client.senhaMysql)}
                                   onChange={(e) => client.senhaMysql = String(e.target.value)}
                                 />
-                              <div>
-                                <DrawerTitle className=" text-start" >Porta</DrawerTitle>
+                              </div>
+
+                              <div className="ml-1 mr-1">
+                                <DrawerTitle className=" text-start text-[12px]" >Porta</DrawerTitle>
                                 <Input placeholder="Host"
                                   defaultValue={client && String(client.portaMysql)}
                                   onChange={(e) => client.portaMysql = String(e.target.value)}
-                               />
+                                  className=" text-start text-[12px]"
+                                />
                               </div>
                             </div>
                           </div>
 
-                          <div className="items-center flex justify-center m-5" >
-                            <Button className="w-[60%]" onClick={() => connection()} >
+                          <div className="items-center flex justify-center m-5 " >
+                            <Button className="w-[60%]  text-[12px]" onClick={() => connection()} >
                               Testar Conexão
                             </Button>
                           </div>
 
-                          <div className="items-center flex  justify-between">
-                             <div className="md:flex  md:justify-between w-full ">
-                              <div>
-                                <Label htmlFor="username-1" className="m-1">Efetuar backup </Label>
+                          <div className="items-center flex  justify-between ">
+                            <div className="md:flex  md:justify-around w-full ">
+                              <div className="ml-1 mr-1">
+                                <Label htmlFor="username-1" className="m-1 text-start text-[12px]" >Efetuar backup </Label>
                                 <SelectEfetuarBackup efetuarBackup={client.efetuar_backup} list={['S', 'N']} setEfetuarBackup={(i) => { client.efetuar_backup = i }} />
                               </div>
-                                <div>
-                                  <Label htmlFor="username-1" className="m-1">Horario backup </Label>
-                                  <Input placeholder="Horario para efetuar backup"
-                                    type="time"
-                                    defaultValue={
-                                      client && client.hora_agenda_backup &&
-                                        client.hora_agenda_backup != null ?
-                                        formatHours(client.hora_agenda_backup) : '00:00'
-                                      }
-                                      onChange={(e)=>  client.hora_agenda_backup = e.target.value+':00' }
-                                  />
+                              <div className="ml-1 mr-1">
+                                <Label htmlFor="username-1" className="m-1  text-[12px] "   >Horario backup </Label>
+                                <Input placeholder="Horario para efetuar backup"
+                                  type="time"
+                                  defaultValue={
+                                    client && client.hora_agenda_backup &&
+                                      client.hora_agenda_backup != null ?
+                                      formatHours(client.hora_agenda_backup) : '00:00'
+                                  }
+                                  onChange={(e) => client.hora_agenda_backup = e.target.value + ':00'}
+                                  className=" text-start text-[12px]"
+                                />
 
-                                </div>
                               </div>
-                            <div className="md:flex  md:justify-between w-full ">
-                                   <div  >
-                                  <Label htmlFor="username-1" className="m-1">nome banco de dados</Label>
-                                  <Input  
-                                    type=""
-                                    defaultValue={ client && client.nomeBanco ?   client.nomeBanco : ''  }
-                                      onChange={(e)=>  client.nomeBanco = String(e.target.value) }
-                                  />
-                                </div>
-                                  <div>
-                                  <Label htmlFor="username-1" className="m-1">Pasta backup</Label>
-                                  <Input  
-                                    type=""
+                            </div>
+                            <div className="md:flex  md:justify-around w-full ">
+                              <div  >
+                                <Label htmlFor="username-1" className="m-1 text-start text-[12px]"    >nome banco de dados</Label>
+                                <Input
+                                  type=""
+                                  defaultValue={client && client.nomeBanco ? client.nomeBanco : ''}
+                                  onChange={(e) => client.nomeBanco = String(e.target.value)}
+                                  className="text-start text-[12px]"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="username-1" className="m-1 text-start text-[12px]">Pasta backup</Label>
+                                <Input
+                                  type=""
                                   //  disabled
-                                    defaultValue={ client && client.caminhoBkp ?   client.caminhoBkp : ''  }
-                                      onChange={(e)=>  client.caminhoBkp = String(e.target.value) }
-                                  />
-                                    
-                                  </div>
+                                  defaultValue={client && client.caminhoBkp ? client.caminhoBkp : ''}
+                                  onChange={(e) => client.caminhoBkp = String(e.target.value)}
+                                  className="text-start text-[12px]"
+                                />
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -255,13 +266,13 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
         visible={visibleAlert}
         closeDrawer={setOpenDrawer}
       />
-  <Alert
+      <Alert
         description={descriptionMsg}
         setVisible={setVisibleAlertConnection}
         title={titleMsg}
         visible={visibleAlertConnection}
       />
- 
+
 
     </>
 
