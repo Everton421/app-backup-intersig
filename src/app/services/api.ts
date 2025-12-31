@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 export function configApi (){ 
+    //let url ='https://192.168.100.106:3333'
     let url ='https://192.168.100.106:3333'
 
     if(process.env.NEXT_PUBLIC_URL_API && process.env.NEXT_PUBLIC_URL_API != ''){

@@ -6,13 +6,11 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { clientsRequest } from "../@types/clients";
 import { configApi } from "../services/api";
-import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress, ThreeDot } from "react-loading-indicators";
 import { TableClientes } from "@/components/table-clientes";
-import { useAuth } from "../contexts/AuthContext";
+import { AuthUser, useAuth } from "../contexts/AuthContext";
 import { Separator } from "@/components/ui/separator"
 import { SelectActiveClient } from "@/components/select-active-client";
-import { SelectEfetuarBackup } from "@/components/select-efetuar-backup/select-efetuar-bakup";
 import { SelectAcessoSistema } from "@/components/select-acesso-sistema/select-acesso-sistema";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -35,19 +33,24 @@ export default function PageClientes (){
     const { user , isAuthenticated, loadingAuth } = useAuth();
     const router = useRouter();
     
-   useEffect(()=>{
-     if(loadingAuth){
-       setLoading(true)
-     } else{
-     if( user && !loadingAuth ){
-       setLoading(false);
-      }
-     }
+    useEffect(()=>{
+      if(loadingAuth){
+          setLoading(true)
+       } else{
+       
+          if( user && !loadingAuth ){
+           setLoading(false);
+          }
  
-   },[loadingAuth, user ])
+         if(!user || !user.token && loadingAuth){
+            router.push('/login')
+         }
+      }
+  
+    },[loadingAuth, user ])
      
 
-  async function getClients(user:{ user_name:string, token:string} | null ){
+  async function getClients(user: AuthUser  | null ){
      
     if(!user || !user.token  )  { 
       return  router.push('/login') 

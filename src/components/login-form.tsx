@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { configApi } from "@/app/services/api"
-import { useActionState, useState } from "react"
+import {   useState } from "react"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import { ThreeDot } from "react-loading-indicators"
@@ -23,7 +23,7 @@ export function LoginForm({  className, ...props }: React.ComponentProps<"div">)
 
 const [ email, setEmail ] = useState<string>('');
 const [ senha, setSenha ] = useState<string>('');
-const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>()
+const [ msg, setMsg ] = useState<{erro:boolean, msg:string }>({ erro: false, msg:''})
 const [ loading, setLoading ] = useState(false);
   
   const router = useRouter();
@@ -55,16 +55,21 @@ const [ loading, setLoading ] = useState(false);
           setLoading(false) 
  
         console.log("Erro no login", e )
-        if(e.response.status === 500 ){
-         setMsg({ erro:true, msg:`Erro interno no servidor!`})
+        if(e.response && e.response.status === 500 ){
+         setMsg({ erro:true, msg: `Erro interno no servidor!` })
+         console.log({ erro:true, msg:`${e.response.data.msg}`})
         } 
-        if(e.response.status === 400 && e.response.data.msg ){
+        if(e.response && e.response.status === 400 && e.response.data.msg ){
          setMsg({ erro:true, msg:`${e.response.data.msg}`})
+         console.log({ erro:true, msg:`${e.response.data.msg}`})
         }
+
+        if( e.response && e.response.status !== 400 && e.response.status !== 500){
+          setMsg({ erro:true, msg:`Erro desconhecido ao tentar consultar a api. Verifique a disponibilidade do servidor.`})
+        }
+
       }finally{
           setLoading(false)
-         setMsg(undefined)
-
       }
   
     } 
@@ -77,18 +82,28 @@ const [ loading, setLoading ] = useState(false);
     </div>
       
       : 
-      <Card>
+      <>
       
-
+      <Card>
+      <div className="flex items-center justify-center">
+       <Image
+         className="rounded-4xl"
+         width={100}
+         height={100}
+         src={'/images/logo.png'}
+         alt=""
+        />
+      </div>
         <CardHeader>
-          <CardTitle > Login to your account</CardTitle>
-          {
-            msg && msg?.erro &&  msg?.msg && 
-          <CardTitle className=" text-center text-red-500"> { msg?.msg }</CardTitle>
-          }
-  
+    
+      {
+        <CardTitle className=" text-center text-red-500"> { msg?.msg }</CardTitle>
+      }
         </CardHeader>
+       
         <CardContent>
+       
+        
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -124,6 +139,8 @@ const [ loading, setLoading ] = useState(false);
          
         </CardContent>
       </Card>
+      </>
+
   }
     </div>
   )

@@ -2,9 +2,14 @@
 'use client'
 import React, { createContext , useState, useContext, ReactNode, Children, useEffect  } from "react";
 
+  export  interface AuthUser   {
+            nome:string 
+            token:string
+            codigo:number
+        }
     interface AuthContextType{
         isAuthenticated: boolean;
-        user: { user_name:string , token:string } | null 
+        user:  AuthUser | null 
         setUser: any
         logout: ()=> void;
         loadingAuth:boolean
@@ -18,7 +23,7 @@ import React, { createContext , useState, useContext, ReactNode, Children, useEf
     }
 
 export const AuthProvider = ( { children }: AuthProviderProps ) =>{
-        const [ user, setUser ] = useState< { user_name:string, token:string  } | null> (null);
+        const [ user, setUser ] = useState< { nome:string, token:string,codigo:number } | null> (null);
         const [ isAuthenticated, setIsAuthenticated ] = useState(false)
         const [ loadingAuth, setLoadingAuth]  = useState(true);
 

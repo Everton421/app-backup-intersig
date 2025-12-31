@@ -4,13 +4,10 @@ import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
-import { clientsRequest } from "../@types/clients";
 import {  configApi } from "../services/api";
-import { TableBackups } from "@/components/table-backups";
 import { OrbitProgress } from "react-loading-indicators";
-import { TableClientes } from "@/components/table-clientes";
 import { TableUsers } from "@/components/table-usuarios";
-import { useAuth } from "../contexts/AuthContext";
+import { AuthUser, useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 type usuario = {
@@ -27,7 +24,7 @@ export default function PageUsers (){
     const { user,loadingAuth } = useAuth();
     const router = useRouter();
 
-  async function getUsers(user:{ user_name:string, token:string} | null){
+  async function getUsers(user: AuthUser | null){
       if(!user || !user.token  )  { 
       return  router.push('/login') 
     }

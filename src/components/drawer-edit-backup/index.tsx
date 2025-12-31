@@ -23,6 +23,7 @@ import { Alert } from "../alert/alert"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { dataUpdateConfig, utils } from "./utils/functions"
 import { useAuth } from "@/app/contexts/AuthContext"
+import { ChevronDown } from "lucide-react"
 
 type props = {
   client: clientsRequest,
@@ -115,6 +116,9 @@ export function DrawerEditBackup({ client, openDrawer, setOpenDrawer }: props) {
       <Drawer open={openDrawer} >
         <DrawerContent>
           <div className="mx-auto md:w-[70%]  ">
+            <div className="flex justify-center items-center" onClick={()=>setOpenDrawer(false)}>
+              <ChevronDown  size={35} />
+            </div>
             <DrawerHeader >
               <DialogTitle>Configurações de backups</DialogTitle>
               <DrawerDescription className="hidden">Editando Configurações de backups do cliente {client.nomeFantasia}  | cnpj: {client.cnpj}</DrawerDescription>

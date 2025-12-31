@@ -11,25 +11,27 @@ export default function Page(){
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    useEffect(()=>{
         
+    
+        useEffect(()=>{
+
             if(loadingAuth ){
                 setLoading(true);
             }else{
 
-                if(user && user.token){
+                if(user && user.token && user.codigo){
                     router.push('/backups')
                 }else{
                     router.push('/login')
                 }
             }
-    
-        },[])
+        }, [ user, loadingAuth])
+ 
+        
 
         return (
-            loading &&
-            <div className=" flex w-full items-center justify-between">
-
+          loading &&
+         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
                 <ThreeDot
                     size="large"
                     color={ theme  === 'dark' ? '#FFF' : "#000"}
