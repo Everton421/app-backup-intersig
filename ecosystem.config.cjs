@@ -2,9 +2,8 @@ module.exports = {
     apps:[
         {
             name: 'app-backups',
-            script: 'next start -p 8000',
-            interpreter: "node",
-            args: 'start',
+            script: 'start-server.js',
+            interpreter: 'node',
             cwd:'.',
             autorestart: true,
             watch:false,
