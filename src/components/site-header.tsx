@@ -24,7 +24,7 @@ export function SiteHeader({ pageName  }: {pageName? :string }) {
             <div className="flex ml-6">
             <Button variant="ghost" asChild size="sm" className="sm:flex">
                 <span>
-                  { user && user && user.user_name}
+                  { user && user && user.nome}
                 </span>
               </Button>
               <ThemeSwitcher/>
