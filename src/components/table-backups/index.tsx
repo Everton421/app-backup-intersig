@@ -1,10 +1,12 @@
 import { clientsRequest } from "@/app/@types/clients"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { IconAlertCircleFilled, IconCircleCheckFilled, IconCircleXFilled, IconLoader, IconSettingsCancel } from "@tabler/icons-react";
+import { IconAlertCircleFilled, IconArrowUpToArc, IconCircleCheckFilled, IconCircleXFilled, IconEdit, IconLoader, IconSettingsCancel } from "@tabler/icons-react";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
 import { DrawerEditBackup } from "../drawer-edit-backup";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ArrowBigUpDash, ArrowDownUp } from "lucide-react";
+import { Button } from "../ui/button";
 
 type props = 
 {
@@ -20,6 +22,9 @@ export const TableBackups = ({clients }:props )=>{
   setEditBackup(client)
   setViewDrawer(true)
 }
+
+
+
 return (
 <Table >
  
@@ -28,10 +33,13 @@ return (
       <TableHead className="md:text-[15px] text-[10px]">Cód</TableHead>
       <TableHead className="md:text-[15px] text-[10px]">Nome</TableHead>
       <TableHead className="md:text-[15px] text-[10px]">Último Backup</TableHead>
-      <TableHead className="md:text-[15px] text-[10px]">Último Arquivo</TableHead>
       <TableHead className="md:text-[15px] text-[10px]">Status Backup</TableHead>
       <TableHead className="md:text-[15px] text-[10px]" >efetuar backup</TableHead>
       <TableHead className="md:text-[15px] text-[10px]" >banco de dados</TableHead>
+      <TableHead className="md:text-[15px] text-[10px]" >Editar</TableHead>
+     
+      <TableHead className="md:text-[15px] text-[10px]" >Enviar para fila</TableHead>
+      
 
     </TableRow>
   </TableHeader>
@@ -40,7 +48,7 @@ return (
     clients.length > 0 ? 
         (
             clients.map((i)=>(
-            <TableRow key={i.codigo}  onClick={()=>handleEditBackup(i)}>
+            <TableRow key={i.codigo}  >
                 <TableCell className="font-medium md:text-[15px] text-[10px]"   >{i.codigo}</TableCell>
                 
                 <TableCell>
@@ -68,13 +76,7 @@ return (
                     </span>
 
                </TableCell>
-                  <TableCell >
-                    <span className=" font-sans md:text-[15px] text-[10px] ">
-                      { 
-                        i.arquivoMaisRecente
-                        }
-                    </span>
-                    </TableCell>
+               
                 <TableCell> 
                     { i.status_backup === 'finalizado' && 
                       <div className="flex font-sans  "> 
@@ -152,6 +154,20 @@ return (
                          )  } 
                  </TableCell>
                 <TableCell> <span className=" font-sans " >  { i.nomeBanco ? i.nomeBanco : null}   </span></TableCell>
+
+                <TableCell className="   ">
+                  <button className=" " onClick={()=>handleEditBackup(i)} >
+                      <IconEdit    />
+                  </button>
+                 </TableCell>
+
+                <TableCell className="flex items-center justify-center  ">
+                   <Button  className="bg-green-500 cursor-pointer"  onClick={( )=> alert('teste')}  >
+                      <IconArrowUpToArc className=" " />
+                   </Button>
+                 </TableCell>
+
+
 
                 </TableRow>
             ))
