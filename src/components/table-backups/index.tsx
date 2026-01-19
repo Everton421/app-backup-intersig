@@ -7,6 +7,11 @@ import { DrawerEditBackup } from "../drawer-edit-backup";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { ArrowBigUpDash, ArrowDownUp } from "lucide-react";
 import { Button } from "../ui/button";
+import { configApi } from "@/app/services/api";
+import { Alert } from "../alert/alert";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { ThreeDot } from "react-loading-indicators";
+import { useTheme } from "next-themes";
 
 type props = 
 {
@@ -14,18 +19,74 @@ type props =
 }
 
 export const TableBackups = ({clients }:props )=>{
+    const { theme } = useTheme();
 
+      const api = configApi()
+      const { user  } = useAuth();
+  
   const [ editBackup, setEditBackup ] = useState<clientsRequest>()
   const [ viewDrawer, setViewDrawer ] = useState(false)
+      
+  const [  loadingMessage, setLoadingMessage ] = useState(false);
+  const [ visible, setVisible ] = useState(false);
+  
+  const [title, setTitle ] = useState('');
+  const [ description, setDescription ] = useState('');
+  const [ codigoClientMessage, setCodigoClientMessage ] = useState(0);
 
   function handleEditBackup (client:clientsRequest){
   setEditBackup(client)
   setViewDrawer(true)
 }
 
+ 
+
+async function sendToQueue( codigo: string ){
+
+      setCodigoClientMessage( Number(codigo) );
+
+  try{
+         if(!user ) return console.log('usuario nao esta autenticado ') 
+
+      setLoadingMessage(true)
+     const response   = await api.post(`/send-message-backup/${codigo}`,{}, {
+           headers:{ 'Authorization': user.token},
+     })
+     console.log(response)
+       if(response.status === 200 ){
+            setLoadingMessage(false)
+            setVisible(true)
+            setDescription(response.data.msg)
+            setTitle("Ok!")
+        }
+
+  }catch(e){
+      setLoadingMessage(false)
+            setTitle("Ok!")
+            console.log("erro ", e);
+            setVisible(true)
+            setDescription("Erro ao tentar enviar o backup para a fila" )
+  }finally{
+      setLoadingMessage(false)
+
+  }
+
+}
 
 
 return (
+       <>
+             {
+                          visible && 
+                            <Alert
+                            setVisible={ setVisible}
+                            visible={visible}
+                            description={description}
+                            title={title}
+                            closeDrawer={ setVisible}
+                            />
+                         }
+
 <Table >
  
   <TableHeader>
@@ -156,19 +217,30 @@ return (
                 <TableCell> <span className=" font-sans " >  { i.nomeBanco ? i.nomeBanco : null}   </span></TableCell>
 
                 <TableCell className="   ">
-                  <button className=" " onClick={()=>handleEditBackup(i)} >
+                  <Button className=" rounded-2xl cursor-pointer" onClick={()=>handleEditBackup(i)} >
                       <IconEdit    />
-                  </button>
+                  </Button>
                  </TableCell>
 
                 <TableCell className="flex items-center justify-center  ">
-                   <Button  className="bg-green-500 cursor-pointer"  onClick={( )=> alert('teste')}  >
-                      <IconArrowUpToArc className=" " />
-                   </Button>
+                    {
+                     loadingMessage &&  codigoClientMessage && i.codigo === codigoClientMessage ? 
+                     ( 
+                        <div>    
+                          <ThreeDot
+                           size="large"
+                           color={ theme  === 'dark' ? '#FFF' : "#000"}
+                          />
+                       </div>
+                      ) : (
+                     <Button  className="bg-green-600 cursor-pointer  rounded-2xl  "  onClick={( )=>sendToQueue(String(i.codigo))  }  >
+                         <IconArrowUpToArc className=" " />
+                      </Button>
+                      )
+                    }
+                   
                  </TableCell>
-
-
-
+           
                 </TableRow>
             ))
         ): null
@@ -180,5 +252,7 @@ return (
       }
   </TableBody>
 </Table>
+       </>
+
 )
 }
