@@ -87,10 +87,12 @@ const [ loading, setLoading ] = useState(false);
       <Card>
       <div className="flex items-center justify-center">
        <Image
-         className="rounded-4xl"
-         width={100}
-         height={100}
-         src={'/images/logo.png'}
+         className="rounded-2xl"
+         width={150}
+         height={150}
+         //src={'/images/backup-manager-fundo-branco.png'}
+         src={'/images/backup-manager.png'}
+         
          alt=""
         />
       </div>

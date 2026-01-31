@@ -13,6 +13,8 @@ import {
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { LogOut } from "lucide-react"
+import Image from "next/image"
+import { Separator } from "./ui/separator"
 
 export function NavMain({ items, }: {
   items: {
@@ -28,23 +30,17 @@ export function NavMain({ items, }: {
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Quick Create"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-            >
-              <IconCirclePlusFilled />
-              <span>Quick Create</span>
-            </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <IconMail />
-              <span className="sr-only">Inbox</span>
-            </Button>
-          </SidebarMenuItem>
+          
+              <a href="/backups">
+                 <Image
+                         className="rounded-2xl"
+                         width={120}
+                         height={120}
+                         src={'/images/logo2.png'}
+                         alt=""
+                        />
+              </a>
+              <Separator/>
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
@@ -55,6 +51,7 @@ export function NavMain({ items, }: {
                 <span>{item.title}</span>
               </SidebarMenuButton>
               </a>
+              <Separator/>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

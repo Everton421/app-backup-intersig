@@ -216,8 +216,8 @@ return (
                  </TableCell>
                 <TableCell> <span className=" font-sans " >  { i.nomeBanco ? i.nomeBanco : null}   </span></TableCell>
 
-                <TableCell className="   ">
-                  <Button className=" rounded-2xl cursor-pointer" onClick={()=>handleEditBackup(i)} >
+                <TableCell className="">
+                  <Button variant={"outline"} className="cursor-pointer" onClick={()=>handleEditBackup(i)} >
                       <IconEdit    />
                   </Button>
                  </TableCell>
@@ -233,7 +233,7 @@ return (
                           />
                        </div>
                       ) : (
-                     <Button  className="bg-green-600 cursor-pointer  rounded-2xl  "  onClick={( )=>sendToQueue(String(i.codigo))  }  >
+                     <Button variant={"outline"}  className="cursor-pointer shadow-2xl"   onClick={( )=>sendToQueue(String(i.codigo))  }  >
                          <IconArrowUpToArc className=" " />
                       </Button>
                       )
